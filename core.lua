@@ -251,6 +251,7 @@ local function GetGUIDAuraTime(dstGUID, spellID, srcGUID, isStacking)
             else
                 applicationTable = spellTable
             end
+            if not applicationTable then return end
             local duration, expirationTime = unpack(applicationTable)
             if GetTime() <= expirationTime then
                 return duration, expirationTime
