@@ -56,72 +56,6 @@ lib.Talent = lib.Talent or function (...)
 end
 
 
-
-local function MakeAuraUID(spellID, srcGUID)
-    if srcGUID then
-        return string.format("%d-%s", spellID, srcGUID)
-    else
-        return spellID
-    end
-end
-
-local function cleanDuration(duration, spellID, srcGUID)
-    if type(duration) == "function" then
-        local isSrcPlayer = srcGUID == UnitGUID("player")
-        return duration(spellID, isSrcPlayer)
-    end
-    return duration
-end
-
-
-local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, doRemove)
-    if not opts then return end
-
-    local guidTable = guids[dstGUID]
-    if not guidTable then
-        guids[dstGUID] = setmetatable({}, weakKeysMeta)
-        guidTable = guids[dstGUID]
-    end
-
-    local isStacking = opts.stacking
-    -- local auraUID = MakeAuraUID(spellID, isStacking and srcGUID)
-
-    if doRemove then
-        if isStacking then
-            guidTable[spellID].applications[srcGUID] = nil
-        else
-            guidTable[spellID] = nil
-        end
-        return
-    end
-
-    local spellTable = guidTable[spellID]
-    if not spellTable then
-        guidTable[spellID] = {}
-        spellTable = guidTable[spellID]
-        if isStacking then
-            spellTable.applications = {}
-        end
-    end
-
-    local applicationTable
-    if isStacking then
-        applicationTable = spellTable.applications[srcGUID]
-        if not applicationTable then
-            spellTable.applications[srcGUID] = {}
-            applicationTable = spellTable.applications[srcGUID]
-        end
-    else
-        applicationTable = spellTable
-    end
-
-    local duration = cleanDuration(opts.duration, spellID, srcGUID)
-    local now = GetTime()
-    local expirationTime = now + duration
-    applicationTable[1] = duration
-    applicationTable[2] = expirationTime
-end
-
 --------------------------
 -- DIMINISHING RETURNS
 --------------------------
@@ -198,6 +132,69 @@ local function CountDiminishingReturns(eventType, srcGUID, srcFlags, dstGUID, ds
         end
     end
 end
+
+--------------------------------------------
+
+local function cleanDuration(duration, spellID, srcGUID)
+    if type(duration) == "function" then
+        local isSrcPlayer = srcGUID == UnitGUID("player")
+        return duration(spellID, isSrcPlayer)
+    end
+    return duration
+end
+
+
+local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, doRemove)
+    if not opts then return end
+
+    local guidTable = guids[dstGUID]
+    if not guidTable then
+        guids[dstGUID] = setmetatable({}, weakKeysMeta)
+        guidTable = guids[dstGUID]
+    end
+
+    local isStacking = opts.stacking
+    -- local auraUID = MakeAuraUID(spellID, isStacking and srcGUID)
+
+    if doRemove then
+        if isStacking then
+            guidTable[spellID].applications[srcGUID] = nil
+        else
+            guidTable[spellID] = nil
+        end
+        return
+    end
+
+    local spellTable = guidTable[spellID]
+    if not spellTable then
+        guidTable[spellID] = {}
+        spellTable = guidTable[spellID]
+        if isStacking then
+            spellTable.applications = {}
+        end
+    end
+
+    local applicationTable
+    if isStacking then
+        applicationTable = spellTable.applications[srcGUID]
+        if not applicationTable then
+            spellTable.applications[srcGUID] = {}
+            applicationTable = spellTable.applications[srcGUID]
+        end
+    else
+        applicationTable = spellTable
+    end
+
+    local duration = cleanDuration(opts.duration, spellID, srcGUID)
+    local mul = getDRMul(dstGUID, spellID)
+    duration = duration * mul
+    local now = GetTime()
+    local expirationTime = now + duration
+    applicationTable[1] = duration
+    applicationTable[2] = expirationTime
+end
+
+
 
 ---------------------------
 -- COMBAT LOG HANDLER
