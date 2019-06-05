@@ -157,10 +157,14 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     -- local auraUID = MakeAuraUID(spellID, isStacking and srcGUID)
 
     if doRemove then
-        if isStacking then
-            guidTable[spellID].applications[srcGUID] = nil
-        else
-            guidTable[spellID] = nil
+        if guidTable[spellID] then
+            if isStacking then
+                if guidTable[spellID].applications then
+                    guidTable[spellID].applications[srcGUID] = nil
+                end
+            else
+                guidTable[spellID] = nil
+            end
         end
         return
     end
