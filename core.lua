@@ -105,7 +105,8 @@ local function getDRMul(dstGUID, spellID)
             if isExpired then
                 return 1
             else
-                return DRMultipliers[catTable.level]
+                local mul = DRMultipliers[catTable.level]
+                return mul or 1
             end
         end
     end
