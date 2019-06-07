@@ -3,6 +3,21 @@ if not lib then return end
 
 local Spell = lib.AddAura
 local Talent = lib.Talent
+
+------------------
+-- ENGINEERING
+------------------
+
+Spell({ 13099, 13138, 16566 }, { 
+    duration = function(spellID)
+        if spellID == 13138 then return 20 -- backfire
+        elseif spellID == 16566 then return 30 -- backfire
+        else return 10 end
+    end
+}) -- Net-o-Matic
+Spell({ 4068, 19769 }, { duration = 3 }) -- Iron Grenade, Thorium
+-- too lazy to add more, everyone is using iron anyway
+
 -------------
 -- PRIEST
 -------------
