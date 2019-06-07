@@ -120,7 +120,7 @@ Spell({ 5570, 24974, 24975, 24976, 24977 }, { duration = 12, stacking = true }) 
 -- WARRIOR
 -------------
 
-Spell( 24573, { duration = 5 }) -- Mortal Strke Healind Reduction
+Spell( 12294, { duration = 10 }) -- Mortal Strke Healind Reduction
 
 Spell( 18498, { duration = 3 }) -- Improved Shield Bash
 
