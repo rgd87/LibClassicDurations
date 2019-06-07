@@ -5,8 +5,10 @@ local Spell = lib.AddAura
 local Talent = lib.Talent
 
 ------------------
--- ENGINEERING
+-- GLOBAL
 ------------------
+
+Spell( 11196, { duration = 60 }) -- Recently Bandaged
 
 Spell({ 13099, 13138, 16566 }, { 
     duration = function(spellID)
