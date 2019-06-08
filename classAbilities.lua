@@ -142,7 +142,16 @@ Spell( 12721, { duration = 12, stacking = true }) -- Deep Wounds
 
 Spell({ 1715, 7372, 7373 }, { duration = 15 }) -- Hamstring
 Spell( 23694 , { duration = 5 }) -- Improved Hamstring
-Spell({ 6343, 8198, 8204, 8205, 11580, 11581 }, { duration = 10 }) -- Thunder Clap
+Spell({ 6343, 8198, 8204, 8205, 11580, 11581 }, {
+    duration = function(spellID)
+        if spellID == 6343 then return 10
+        elseif spellID == 8198 then return 14
+        elseif spellID == 8204 then return 18
+        elseif spellID == 8205 then return 22
+        elseif spellID == 11580 then return 26
+        else return 30 end
+    end
+}) -- Thunder Clap
 Spell({ 694, 7400, 7402, 20559, 20560 }, { duration = 6 }) -- Mocking Blow
 Spell( 1161 ,{ duration = 6 }) -- Challenging Shout
 Spell( 355 ,{ duration = 3 }) -- Taunt
