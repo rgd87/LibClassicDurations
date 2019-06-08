@@ -5,7 +5,7 @@ Description: tracking expiration times
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 1.0
+local MAJOR, MINOR = "LibClassicDurations", 1.01
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
