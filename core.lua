@@ -5,7 +5,7 @@ Description: tracking expiration times
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 1.01
+local MAJOR, MINOR = "LibClassicDurations", 1.02
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -199,8 +199,6 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     applicationTable[2] = expirationTime
 end
 
-
-
 ---------------------------
 -- COMBAT LOG HANDLER
 ---------------------------
@@ -224,6 +222,9 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         -- elseif eventType == "SPELL_AURA_REMOVED_DOSE" then
             -- self:RemoveDose(srcGUID, dstGUID, spellID, spellName, auraType, amount)
         end
+    end
+    if eventType == "UNIT_DIED" then
+        guids[dstGUID] = nil
     end
 end
 
