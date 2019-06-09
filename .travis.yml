@@ -9,7 +9,8 @@ install: luarocks install --local luacheck
 
 script: /home/travis/.luarocks/bin/luacheck . --no-color -q
 
-script: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
+after_success:
+  - curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
  
 branches:
   only:
