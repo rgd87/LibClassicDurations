@@ -68,7 +68,7 @@ local COMBATLOG_OBJECT_REACTION_FRIENDLY = COMBATLOG_OBJECT_REACTION_FRIENDLY
 
 local DRMultipliers = { 0.5, 0.25, 0}
 local function addDRLevel(dstGUID, category)
-    local guitTable = DRInfo[dstGUID]
+    local guidTable = DRInfo[dstGUID]
     if not guidTable then
         DRInfo[dstGUID] = {}
         guidTable = DRInfo[dstGUID]
@@ -96,7 +96,7 @@ local function getDRMul(dstGUID, spellID)
     local category = lib.DR_CategoryBySpellID[spellID]
     if not category then return 1 end
 
-    local guitTable = DRInfo[dstGUID]
+    local guidTable = DRInfo[dstGUID]
     if guidTable then
         local catTable = guidTable[category]
         if catTable then
