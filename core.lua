@@ -11,7 +11,7 @@ if not lib then return end
 
 lib.frame = lib.frame or CreateFrame("Frame")
 
-local weakKeysMeta = { __mode == "k" }
+local weakKeysMeta = { __mode = "k" }
 lib.guids = lib.guids or setmetatable({}, weakKeysMeta)
 lib.spells = lib.spells or {
 
