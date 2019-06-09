@@ -1,6 +1,10 @@
 package-as: LibClassicDurations
 enable-nolib-creation: no
 
+manual-changelog:
+  filename: CHANGELOG
+  markup-type: markdown
+
 externals:
     LibStub:
         url: svn://svn.wowace.com/wow/libstub/mainline/trunk
