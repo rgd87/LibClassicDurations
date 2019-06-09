@@ -49,7 +49,7 @@ Spell({ 8122, 8124, 10888, 10890 }, { duration = 8,  }) -- Psychic Scream
 Spell({ 589, 594, 970, 992, 2767, 10892, 10893, 10894 }, { stacking = true,
     duration = function(spellID, isSrcPlayer)
         -- Improved SWP, 2 ranks: Increases the duration of your Shadow Word: Pain spell by 3 sec.
-        local talents = isSrcPlayer and Talent(12313, 12804, 12807) or 0
+        local talents = isSrcPlayer and 3*Talent(15275, 15317) or 0
         return 18 + talents
     end
 }) -- SW:P
