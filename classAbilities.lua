@@ -10,7 +10,7 @@ local Talent = lib.Talent
 
 Spell( 11196, { duration = 60 }) -- Recently Bandaged
 
-Spell({ 13099, 13138, 16566 }, { 
+Spell({ 13099, 13138, 16566 }, {
     duration = function(spellID)
         if spellID == 13138 then return 20 -- backfire
         elseif spellID == 16566 then return 30 -- backfire
@@ -34,7 +34,7 @@ Spell({ 10797, 19296, 19299, 19302, 19303, 19304, 19305 }, { duration = 6, stack
 Spell({ 2944, 19276, 19277, 19278, 19279, 19280 }, { duration = 24, stacking = true }) --devouring plague
 Spell({ 453, 8192, 10953 }, { duration = 15 }) -- mind soothe
 
-Spell({ 9484, 9485, 10955 }, { 
+Spell({ 9484, 9485, 10955 }, {
     duration = function(spellID)
         if spellID == 9484 then return 30
         elseif spellID == 9485 then return 40
@@ -96,7 +96,7 @@ Spell( 6795, { duration = 3 }) -- Taunt
 Spell({ 1850, 9821 }, { duration = 15, type = "BUFF" }) -- Dash
 Spell( 5229, { duration = 10, type = "BUFF" }) -- Enrage
 Spell({ 22842, 22895, 22896 }, { duration = 10, type = "BUFF" }) -- Frenzied Regeneration
-Spell( 16922, { duration = 3 }) -- Imp Starfire Stun 
+Spell( 16922, { duration = 3 }) -- Imp Starfire Stun
 Spell({ 9005, 9823, 9827 }, { duration = 2 }) -- Pounce
 Spell({ 9007, 9824, 9826 }, { duration = 18, stacking = true, }) -- Pounce Bleed
 Spell({ 8921, 8924, 8925, 8926, 8927, 8928, 8929, 9833, 9834, 9835 }, {
@@ -237,7 +237,7 @@ Spell({ 704, 7658, 7659, 11717 }, { duration = 120 }) -- Curse of Recklessness
 Spell( 603 ,{ duration = 60, stacking = true }) -- Curse of Doom
 Spell( 18223 ,{ duration = 12 }) -- Curse of Exhaustion
 Spell( 6358, { duration = 20 }) -- Seduction, varies, Improved Succubus
-Spell({ 5484, 17928 }, { 
+Spell({ 5484, 17928 }, {
     duration = function(spellID)
         return spellID == 5484 and 10 or 15
     end

@@ -210,7 +210,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
     spellID, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
 
     CountDiminishingReturns(eventType, srcGUID, srcFlags, dstGUID, dstFlags, spellID, auraType)
-    
+
     if auraType == "BUFF" or auraType == "DEBUFF" then
         local opts = spells[spellID]
         if  eventType == "SPELL_AURA_REFRESH" or
@@ -240,7 +240,7 @@ end
 
 local function GetGUIDAuraTime(dstGUID, spellID, srcGUID, isStacking)
     local guidTable = guids[dstGUID]
-    if guidTable then        
+    if guidTable then
         -- local isStacking = opts.stacking
         local spellTable = guidTable[spellID]
         if spellTable then
