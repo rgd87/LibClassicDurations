@@ -160,6 +160,7 @@ lib.DR_CategoryBySpellID = {
     [12809] = STUN, -- Concussion Blow
     [12798] = RANDOM_STUN, -- Improved Revenge
     [5246] = FEAR, -- Intimidating Shout
+    [7922] = STUN, -- Charge
 
     [20253] = STUN, -- Intercept Stun 3 ranks
     [20614] = STUN,
