@@ -120,8 +120,9 @@ Spell({ 5570, 24974, 24975, 24976, 24977 }, { duration = 12, stacking = true }) 
 -- WARRIOR
 -------------
 
-Spell( 12294, { duration = 10 }) -- Mortal Strke Healing Reduction
+Spell( 12294, { duration = 10 }) -- Mortal Strike Healing Reduction
 
+Spell({72, 1671, 1672}, { duration = 6 }) -- Shield Bash
 Spell( 18498, { duration = 3 }) -- Improved Shield Bash
 
 Spell( 20230, { duration = 15, type = "BUFF" }) -- Retaliation
@@ -156,7 +157,12 @@ Spell({ 694, 7400, 7402, 20559, 20560 }, { duration = 6 }) -- Mocking Blow
 Spell( 1161 ,{ duration = 6 }) -- Challenging Shout
 Spell( 355 ,{ duration = 3 }) -- Taunt
 Spell({ 5242, 6192, 6673, 11549, 11550, 11551, 25289 }, { duration = 120, type = "BUFF" }) -- Battle Shout
-Spell({ 1160, 6190, 11554, 11555, 11556 }, { duration = 30 }) -- Demoralizing Shout
+Spell({ 1160, 6190, 11554, 11555, 11556 }, {
+    duration = function(spellID, isSrcPlayer)
+        local talents = isSrcPlayer and Talent(12321, 12835, 12836, 12837, 12838) or 0
+        return 30 * (1 + 0.1 * talents)
+    end
+}) -- Demoralizing Shout, varies
 Spell( 18499, { duration = 10, type = "BUFF" }) -- Berserker Rage
 Spell({ 20253, 20614, 20615 }, { duration = 3 }) -- Intercept
 Spell( 12323, { duration = 6 }) -- Piercing Howl
@@ -176,7 +182,8 @@ Spell( 12809 ,{ duration = 5 }) -- Concussion Blow
 Spell( 12292 ,{ duration = 20, type = "BUFF" }) -- Sweeping Strikes
 Spell({ 12880, 14201, 14202, 14203, 14204 }, { duration = 12, type = "BUFF" }) -- Enrage
 Spell({ 12966, 12967, 12968, 12969, 12970 }, { duration = 15, type = "BUFF" }) -- Flurry
-
+Spell(7922, { duration = 1 }) -- Charge
+Spell(5530, { duration = 3 }) -- Mace Specialization
 
 --------------
 -- ROGUE
