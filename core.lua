@@ -5,11 +5,9 @@ Description: tracking expiration times
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 1.05
+local MAJOR, MINOR = "LibClassicDurations", 2
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
-
--- lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 
 lib.frame = lib.frame or CreateFrame("Frame")
 
@@ -32,6 +30,16 @@ local GetTime = GetTime
 f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
 end)
+
+local SpellDataVersions = {}
+
+function lib:SetDataVersion(dataType, version)
+    SpellDataVersions[dataType] = version
+end
+
+function lib:GetDataVersion(dataType)
+    return SpellDataVersions[dataType] or 0
+end
 
 
 lib.AddAura = lib.AddAura or function(id, opts)

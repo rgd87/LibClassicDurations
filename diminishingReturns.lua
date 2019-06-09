@@ -1,6 +1,8 @@
 local lib = LibStub("LibClassicDurations", true)
 if not lib then return end
 
+local Type, Version = "DRTable", 5
+if lib:GetDataVersion(Type) >= Version then return end
 
 local FEAR = "FEAR"
 local SILENCE = "SILENCE"
@@ -166,3 +168,5 @@ lib.DR_CategoryBySpellID = {
     [20614] = STUN,
     [20615] = STUN,
 }
+
+lib:SetDataVersion(Type, Version)

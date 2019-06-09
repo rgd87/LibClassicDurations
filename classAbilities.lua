@@ -1,5 +1,8 @@
-local lib = LibStub("LibClassicDurations", true)
+local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
+
+local Type, Version = "SpellTable", 5
+if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
 local Talent = lib.Talent
@@ -457,3 +460,7 @@ Spell({ 122, 865, 6131, 10230 }, { duration = 8 }) -- Frost Nova
 -- Spell(12536, { duration = 15 }) -- Clearcasting
 Spell(12043, { duration = 15 }) -- Presence of Mind
 Spell(12042, { duration = 15 }) -- Arcane Power
+
+
+
+lib:SetDataVersion(Type, Version)
