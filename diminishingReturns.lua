@@ -7,6 +7,7 @@ local SILENCE = "SILENCE"
 local INCAP = "INCAP"
 local STUN = "STUN"
 local HORROR = "HORROR"
+local ROOT = "ROOT"
 local OPENER_STUN = "OPENER_STUN"
 local RANDOM_STUN = "RANDOM_STUN"
 local RANDOM_ROOT = "RANDOM_ROOT"
@@ -159,6 +160,7 @@ lib.DR_CategoryBySpellID = {
     [12809] = STUN, -- Concussion Blow
     [12798] = RANDOM_STUN, -- Improved Revenge
     [5246] = FEAR, -- Intimidating Shout
+    [7922] = STUN, -- Charge
 
     [20253] = STUN, -- Intercept Stun 3 ranks
     [20614] = STUN,
