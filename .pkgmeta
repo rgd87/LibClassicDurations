@@ -2,7 +2,7 @@ package-as: LibClassicDurations
 enable-nolib-creation: no
 
 manual-changelog:
-  filename: CHANGELOG
+  filename: CHANGELOG.md
   markup-type: markdown
 
 externals:
