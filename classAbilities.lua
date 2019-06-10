@@ -219,9 +219,11 @@ Spell({ 8647, 8649, 8650, 11197, 11198 }, { duration = 30 }) -- Expose Armor
 Spell({ 703, 8631, 8632, 8633, 11289, 1129 }, { duration = 18 }) -- Garrote
 Spell({ 408, 8643 }, {
     duration = function(spellID, isSrcPlayer, comboPoints)
+        local duration = spellID == 8643 and 1 or 0 -- if Rank 2, add 1s
         if isSrcPlayer then
-            local duration = spellID == 8643 and 1 or 0 -- if Rank 2, add 1s
             return duration + comboPoints
+        else
+            return duration + 5 -- just assume 5cp i guess
         end
     end
 }) -- Kidney Shot
@@ -230,6 +232,8 @@ Spell({ 1943, 8639, 8640, 11273, 11274, 11275 }, { stacking = true,
     duration = function(spellID, isSrcPlayer, comboPoints)
         if isSrcPlayer then
             return (6 + comboPoints*2)
+        else
+            return 16
         end
     end
 }) -- Rupture
