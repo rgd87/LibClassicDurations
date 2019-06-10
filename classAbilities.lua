@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 6
+local Type, Version = "SpellTable", 7
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -11,6 +11,7 @@ local Talent = lib.Talent
 -- GLOBAL
 ------------------
 
+Spell( 835, { duration = 3 }) -- Tidal Charm
 Spell( 11196, { duration = 60 }) -- Recently Bandaged
 
 Spell({ 13099, 13138, 16566 }, {
