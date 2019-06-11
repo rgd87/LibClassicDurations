@@ -453,6 +453,9 @@ Spell(12355, { duration = 2 }) -- Impact
 Spell(12654, { duration = 4 }) -- Ignite
 Spell(22959, { duration = 30 }) -- Fire Vulnerability
 Spell({ 11113, 13018, 13019, 13020, 13021 }, { duration = 6 }) -- Blast Wave
+
+Spell({ 2120, 2121, 8422, 8423, 10215, 10216 }, { duration = 8, stacking = true }) -- Flamestrike
+
 Spell({ 120, 8492, 10159, 10160, 10161 }, {
     duration = function(spellID, isSrcPlayer)
         local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
