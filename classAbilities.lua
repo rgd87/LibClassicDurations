@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 8
+local Type, Version = "SpellTable", 9
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -11,6 +11,7 @@ local Talent = lib.Talent
 -- GLOBAL
 ------------------
 
+-- Spell( 23605, { duration = 5 }) -- Nightfall (Axe) Proc
 Spell( 835, { duration = 3 }) -- Tidal Charm
 Spell( 11196, { duration = 60 }) -- Recently Bandaged
 
@@ -28,6 +29,7 @@ Spell({ 4068, 19769 }, { duration = 3 }) -- Iron Grenade, Thorium
 -- PRIEST
 -------------
 
+Spell({ 7001, 27873, 27874 }, { duration = 10, type = "BUFF" }) -- Lightwell Renew
 Spell( 552, { duration = 20, type = "BUFF" }) -- Abolish Disease
 Spell({ 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 }, {duration = 30, type = "BUFF" }) -- PWS
 Spell( 6788, { duration = 15, type = "DEBUFF" }) -- Weakened Soul
@@ -65,6 +67,7 @@ Spell( 15286 ,{ duration = 60 }) -- Vampiric Embrace
 -- DRUID
 ---------------
 
+Spell( 19675, { duration = 4 }) -- Feral Charge
 Spell({ 467, 782, 1075, 8914, 9756, 9910 }, { duration = 600, type = "BUFF" }) -- Thorns
 Spell( 22812 ,{ duration = 15, type = "BUFF" }) -- Barkskin
 Spell({ 339, 1062, 5195, 5196, 9852, 9853 }, {
@@ -89,9 +92,10 @@ Spell({ 2637, 18657, 18658 }, {
 Spell({ 99, 1735, 9490, 9747, 9898 }, { duration = 30 }) -- Demoralizing Roar
 Spell({ 5211, 6798, 8983 }, { stacking = true, -- stacking?
     duration = function(spellID)
-        if spellID == 5211 then return 2
-        elseif spellID == 6798 then return 3
-        else return 4 end
+        local brutal_impact = Talent(16940, 16941)*0.5
+        if spellID == 5211 then return 2+brutal_impact
+        elseif spellID == 6798 then return 3+brutal_impact
+        else return 4+brutal_impact end
     end
 }) -- Bash
 Spell( 5209, { duration = 6 }) -- Challenging Roar
@@ -101,7 +105,12 @@ Spell({ 1850, 9821 }, { duration = 15, type = "BUFF" }) -- Dash
 Spell( 5229, { duration = 10, type = "BUFF" }) -- Enrage
 Spell({ 22842, 22895, 22896 }, { duration = 10, type = "BUFF" }) -- Frenzied Regeneration
 Spell( 16922, { duration = 3 }) -- Imp Starfire Stun
-Spell({ 9005, 9823, 9827 }, { duration = 2 }) -- Pounce
+Spell({ 9005, 9823, 9827 }, {
+    duration = function(spellID)
+        local brutal_impact = Talent(16940, 16941)*0.5
+        return 2+brutal_impact
+    end
+}) -- Pounce
 Spell({ 9007, 9824, 9826 }, { duration = 18, stacking = true, }) -- Pounce Bleed
 Spell({ 8921, 8924, 8925, 8926, 8927, 8928, 8929, 9833, 9834, 9835 }, {
     duration = function(spellID)
@@ -193,7 +202,11 @@ Spell(5530, { duration = 3 }) -- Mace Specialization
 -- ROGUE
 --------------
 
+-- SKIPPING: Ghostly Strike
+Spell({ 16511, 17347, 17348 }, { duration = 15 }) -- Hemorrhage
+Spell({ 11327, 11329 }, { duration = 10 }) -- Vanish
 Spell({ 3409, 11201 }, { duration = 12 }) -- Crippling Poison
+Spell({ 13218, 13222, 13223, 13224 }, { duration = 15 }) -- Wound Poison
 Spell({ 2818, 2819, 11353, 11354, 25349 }, { duration = 12, stacking = true }) -- Deadly Poison
 Spell({ 5760, 8692, 11398 }, {
     duration = function(spellID)
@@ -217,7 +230,7 @@ Spell({ 2070, 6770, 11297 }, {
 Spell( 2094 , { duration = 10 }) -- Blind
 
 Spell({ 8647, 8649, 8650, 11197, 11198 }, { duration = 30 }) -- Expose Armor
-Spell({ 703, 8631, 8632, 8633, 11289, 1129 }, { duration = 18 }) -- Garrote
+Spell({ 703, 8631, 8632, 8633, 11289, 11290 }, { duration = 18 }) -- Garrote
 Spell({ 408, 8643 }, {
     duration = function(spellID, isSrcPlayer, comboPoints)
         local duration = spellID == 8643 and 1 or 0 -- if Rank 2, add 1s
@@ -257,7 +270,12 @@ Spell({ 1776, 1777, 8629, 11285, 11286 }, {
 ------------
 
 Spell( 24259 ,{ duration = 3 }) -- Spell Lock Silence
-
+Spell({ 17767, 17850, 17851, 17852, 17853, 17854 }, { duration = 10 }) -- Consume Shadows (Voidwalker)
+Spell( 18118, { duration = 5 }) -- Aftermath Proc
+-- Spell({ 132, 2970, 11743 }, { duration = 600 }) -- Detect Invisibility
+-- Spell( 5697, { duration = 600 }) -- Unending Breath
+Spell({ 17794, 17798, 17797, 17799, 17800 }, { duration = 12 }) -- Shadow Vulnerability (Imp Shadow Bolt)
+-- SKIPPING: Amplify Curse
 Spell({ 1714, 11719 }, { duration = 30 }) -- Curse of Tongues
 Spell({ 702, 1108, 6205, 7646, 11707, 11708 },{ duration = 120 }) -- Curse of Weakness
 Spell({ 17862, 17937 }, { duration = 300 }) -- Curse of Shadows
@@ -265,7 +283,16 @@ Spell({ 1490, 11721, 11722 }, { duration = 300 }) -- Curse of Elements
 Spell({ 704, 7658, 7659, 11717 }, { duration = 120 }) -- Curse of Recklessness
 Spell( 603 ,{ duration = 60, stacking = true }) -- Curse of Doom
 Spell( 18223 ,{ duration = 12 }) -- Curse of Exhaustion
-Spell( 6358, { duration = 20 }) -- Seduction, varies, Improved Succubus
+Spell( 6358, {
+    duration = function(spellID, isSrcPlayer)
+        if isSrcPlayer then
+            local mul = 1 + Talent(18754, 18755, 18756)*0.1
+            return 20*mul
+        else
+            return 20
+        end
+    end
+}) -- Seduction, varies, Improved Succubus
 Spell({ 5484, 17928 }, {
     duration = function(spellID)
         return spellID == 5484 and 10 or 15
@@ -303,6 +330,7 @@ Spell({ 348, 707, 1094, 2941, 11665, 11667, 11668, 25309 },{ duration = 15, stac
 
 Spell({ 6229, 11739, 11740, 28610 } ,{ duration = 30, type = "BUFF" }) -- Shadow Ward
 Spell({ 7812, 19438, 19440, 19441, 19442, 19443 }, { duration = 30, type = "BUFF" }) -- Sacrifice
+Spell({ 17877, 18867, 18868, 18869, 18870, 18871 }, { duration = 5 }) -- Shadowburn Debuff
 
 ---------------
 -- SHAMAN
@@ -390,6 +418,7 @@ Spell({ 20925, 20927, 20928 }, { duration = 10 }) -- Holy Shield
 -- HUNTER
 -------------
 
+Spell({ 1130, 14323, 14324, 14325 }, { duration = 120 }) -- Hunter's Mark
 Spell(19263, { duration = 10, type = "BUFF" }) -- Deterrence
 Spell(3045, { duration = 15, type = "BUFF" }) -- Rapid Fire
 Spell(19574, { duration = 18, type = "BUFF" }) -- Bestial Wrath
@@ -463,12 +492,13 @@ Spell({ 120, 8492, 10159, 10160, 10161 }, {
     end
 }) -- Cone of Cold
 
-Spell({ 12484, 12485, 12486 }, {
-    duration = function(spellID, isSrcPlayer)
-        local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
-        return 1.5 + permafrost
-    end
-}) -- Improved Blizzard
+-- DOESN'T APPEAR IN COMBAT LOG
+-- Spell({ 12484, 12485, 12486 }, {
+--     duration = function(spellID, isSrcPlayer)
+--         local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
+--         return 1.5 + permafrost
+--     end
+-- }) -- Improved Blizzard
 
 Spell(6136 , {
     duration = function(spellID, isSrcPlayer)
