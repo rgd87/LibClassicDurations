@@ -336,6 +336,7 @@ Spell({ 17877, 18867, 18868, 18869, 18870, 18871 }, { duration = 5 }) -- Shadowb
 -- SHAMAN
 ---------------
 
+Spell({ 16177, 16236, 16237 }, { duration = 15, type = "BUFF" }) -- Ancestral Fortitude from Ancestral Healing
 Spell({ 8056, 8058, 10472, 10473 }, { duration = 8 }) -- Frost Shock
 Spell({ 8050, 8052, 8053, 10447, 10448, 29228 }, { duration = 12, stacking = true }) -- Flame Shock
 Spell( 29203 ,{ duration = 15, type = "BUFF" }) -- Healing Way
