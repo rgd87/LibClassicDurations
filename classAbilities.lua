@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 9
+local Type, Version = "SpellTable", 10
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -29,6 +29,7 @@ Spell({ 4068, 19769 }, { duration = 3 }) -- Iron Grenade, Thorium
 -- PRIEST
 -------------
 
+Spell( 6346, { duration = 600, type = "BUFF" }) -- Fear Ward
 Spell({ 7001, 27873, 27874 }, { duration = 10, type = "BUFF" }) -- Lightwell Renew
 Spell( 552, { duration = 20, type = "BUFF" }) -- Abolish Disease
 Spell({ 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 }, {duration = 30, type = "BUFF" }) -- PWS
@@ -427,6 +428,7 @@ Spell({ 1978, 13549, 13550, 13551, 13552, 13553, 13554, 13555, 25295 }, { durati
 Spell({ 3043, 14275, 14276, 14277 }, { duration = 20 }) -- Scorpid Sting
 Spell({ 3034, 14279, 14280 }, { duration = 8 }) -- Viper Sting
 Spell({ 19386, 24132, 24133 }, { duration = 12 }) -- Wyvern Sting
+Spell({ 24131, 24134, 24135 }, { duration = 12 }) -- Wyvern Sting Dot
 Spell({ 1513, 14326, 14327 }, {
     duration = function(spellID)
         if spellID == 1513 then return 10
@@ -438,7 +440,7 @@ Spell({ 1513, 14326, 14327 }, {
 Spell(19229, { duration = 5 }) -- Wing Clip
 Spell({ 19306, 20909, 20910 }, { duration = 5 }) -- Counterattack
 -- Spell({ 13812, 14314, 14315 }, { duration = 20, stacking = true }) -- Explosive Trap
-Spell({ 13797, 14298, 14299, 14300, 14301 }, { duration = 20, stacking = true }) -- Immolation Trap
+Spell({ 13797, 14298, 14299, 14300, 14301 }, { duration = 15, stacking = true }) -- Immolation Trap
 Spell({ 3355, 14308, 14309 }, {
     duration = function(spellID, isSrcPlayer)
         local mul = 1
