@@ -180,7 +180,9 @@ Spell({ 1160, 6190, 11554, 11555, 11556 }, {
 Spell( 18499, { duration = 10, type = "BUFF" }) -- Berserker Rage
 Spell({ 20253, 20614, 20615 }, { duration = 3 }) -- Intercept
 Spell( 12323, { duration = 6 }) -- Piercing Howl
-Spell( 5246, { duration = 8 }) -- Intimidating Shout
+Spell( 5246, { duration = 8 }) -- Intimidating Shout Fear
+Spell( 20511, { duration = 8 }) -- Intimidating Shout Main Target Cower Effect
+
 Spell( 676 ,{
     duration = function(spellID, isSrcPlayer)
         local talents = isSrcPlayer and Talent(12313, 12804, 12807) or 0
