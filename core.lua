@@ -415,6 +415,7 @@ local function GetGUIDAuraTime(dstGUID, spellID, srcGUID, isStacking)
 end
 
 function lib:GetAuraDurationByUnit(unit, spellID, casterUnit)
+    assert(spellID, "spellID is nil")
     local opts = spells[spellID]
     if not opts then return end
     local dstGUID = UnitGUID(unit)
