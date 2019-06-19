@@ -439,6 +439,7 @@ function lib:RegisterFrame(frame)
         end
     end
 end
+lib.Register = lib.RegisterFrame
 
 function lib:UnregisterFrame(frame)
     activeFrames[frame] = nil
@@ -450,5 +451,4 @@ function lib:UnregisterFrame(frame)
         end
     end
 end
-
-
+lib.Unregister = lib.UnregisterFrame
