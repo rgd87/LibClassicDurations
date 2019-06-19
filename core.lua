@@ -21,8 +21,12 @@ lib.npc_spells = lib.npc_spells or {}
 
 lib.buffCache = lib.buffCache or setmetatable({}, weakKeysMeta)
 local buffCache = lib.buffCache
+
 lib.buffCacheValid = lib.buffCacheValid or setmetatable({}, weakKeysMeta)
 local buffCacheValid = lib.buffCacheValid
+
+lib.nameplateUnitMap = lib.nameplateUnitMap or {}
+local nameplateUnitMap = lib.nameplateUnitMap
 
 local f = lib.frame
 local callbacks = lib.callbacks
@@ -290,14 +294,11 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
                 -- invalidate buff cache
                 buffCacheValid[dstGUID] = nil
 
-                -- shitty unit loopkup
-                local unit
                 if dstGUID == UnitGUID("target") then
-                    unit = "target"
+                    callbacks:Fire("UNIT_BUFF", "target")
                 end
-
-                if unit then
-                    callbacks:Fire("UNIT_BUFF", unit)
+                if nameplateUnitMap[dstGUID] then
+                    callbacks:Fire("UNIT_BUFF", nameplateUnitMap[dstGUID])
                 end
             end
         end
@@ -310,7 +311,6 @@ end
 ---------------------------
 -- ENEMY BUFFS
 ---------------------------
-
 local makeBuffInfo = function(spellID, bt)
     local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spellID)
     -- buffName, icon, count, debuffType, duration, expirationTime, caster, canStealOrPurge, _ , spellId
@@ -365,11 +365,25 @@ function lib:UnitAura(...)
     return self.UnitAuraDirect(...)
 end
 
-
-function callbacks.OnUsed()
+function f:NAME_PLATE_UNIT_ADDED(event, unit)
+    local unitGUID = UnitGUID(unit)
+    print(event, unitGUID, unit)
+    nameplateUnitMap[unitGUID] = unit
+end
+function f:NAME_PLATE_UNIT_REMOVED(event, unit)
+    local unitGUID = UnitGUID(unit)
+    if unitGUID then -- it returns correctly on death, but just in case
+        nameplateUnitMap[unitGUID] = nil
+    end
 end
 
+function callbacks.OnUsed()
+    f:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+    f:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+end
 function callbacks.OnUnused()
+    f:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
+    f:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
 end
 
 ---------------------------
