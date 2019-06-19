@@ -5,10 +5,11 @@ Description: tracking expiration times
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 3
+local MAJOR, MINOR = "LibClassicDurations", 4
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
+lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.frame = lib.frame or CreateFrame("Frame")
 
 local weakKeysMeta = { __mode = "k" }
@@ -16,11 +17,13 @@ lib.guids = lib.guids or setmetatable({}, weakKeysMeta)
 lib.spells = lib.spells or {
 
 }
+lib.npc_spells = lib.npc_spells or {}
 
 local f = lib.frame
 local callbacks = lib.callbacks
 local guids = lib.guids
 local spells = lib.spells
+local npc_spells = lib.npc_spells
 
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local UnitGUID = UnitGUID
@@ -35,6 +38,7 @@ local SpellDataVersions = {}
 
 function lib:SetDataVersion(dataType, version)
     SpellDataVersions[dataType] = version
+    npc_spells = lib.npc_spells
 end
 
 function lib:GetDataVersion(dataType)
@@ -235,6 +239,7 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     local expirationTime = now + duration
     applicationTable[1] = duration
     applicationTable[2] = expirationTime
+    applicationTable[3] = auraType
 end
 
 ---------------------------
@@ -250,15 +255,37 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
     CountDiminishingReturns(eventType, srcGUID, srcFlags, dstGUID, dstFlags, spellID, auraType)
 
     if auraType == "BUFF" or auraType == "DEBUFF" then
+        local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
+
         local opts = spells[spellID]
-        if  eventType == "SPELL_AURA_REFRESH" or
-            eventType == "SPELL_AURA_APPLIED" or
-            eventType == "SPELL_AURA_APPLIED_DOSE" then
-            SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType)
-        elseif eventType == "SPELL_AURA_REMOVED" then
-            SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, true)
-        -- elseif eventType == "SPELL_AURA_REMOVED_DOSE" then
-            -- self:RemoveDose(srcGUID, dstGUID, spellID, spellName, auraType, amount)
+        if not opts then
+            local npc_aura_duration = npc_spells[spellID]
+            if npc_aura_duration then
+                opts = { duration = npc_aura_duration }
+            end
+        end
+        if opts then
+            print(eventType, srcGUID, "=>", dstName, spellID, spellName, auraType )
+            if  eventType == "SPELL_AURA_REFRESH" or
+                eventType == "SPELL_AURA_APPLIED" or
+                eventType == "SPELL_AURA_APPLIED_DOSE" then
+                SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType)
+            elseif eventType == "SPELL_AURA_REMOVED" then
+                SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, true)
+            -- elseif eventType == "SPELL_AURA_REMOVED_DOSE" then
+                -- self:RemoveDose(srcGUID, dstGUID, spellID, spellName, auraType, amount)
+            end
+            isDstFriendly = false
+            if not isDstFriendly and auraType == "BUFF" then
+                -- shitty unit loopkup
+                local unit
+                if dstGUID == UnitGUID("target") then
+                    unit = "target"
+                end
+                if unit then
+                    callbacks:Fire("UNIT_BUFF", unit)
+                end
+            end
         end
     end
     if eventType == "UNIT_DIED" then
@@ -335,4 +362,49 @@ function lib:UnregisterFrame(frame)
             f:UnregisterEvent("UNIT_POWER_UPDATE")
         end
     end
+end
+
+
+local makeBuffInfo = function(spellID, bt)
+    local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spellID)
+    return { name, icon, bt[3], bt[1], bt[2], spellID }
+end
+
+function lib:GetUnitBuffs(unit)
+    local dstGUID = UnitGUID(unit)
+    local guidTable = guids[dstGUID]
+    if not guidTable then
+        return
+    end
+
+    -- make a pass to make sure to remove expired applications?
+
+    local buffs = {}
+    for spellID, t in pairs(guidTable) do
+        if t.applications then
+            for srcGUID, auraTable in pairs(t.applications) do
+                if auraTable[3] == "BUFF" then
+                    table.insert(buffs, makeBuffInfo(spellID, buffTable))
+                end
+            end
+        else
+            if t[3] == "BUFF" then
+                table.insert(buffs, makeBuffInfo(spellID, t))
+            end
+        end
+    end
+    return buffs
+end
+
+local f2 = CreateFrame("Frame", nil, f2)
+f2:SetScript("OnEvent", function(self)
+    callbacks:Fire("UNIT_BUFF", "target")
+end)
+
+function callbacks.OnUsed()
+    f2:RegisterEvent("PLAYER_TARGET_CHANGED")
+end
+
+function callbacks.OnUnused()
+    f2:UnregisterEvent("PLAYER_TARGET_CHANGED")
 end
