@@ -148,6 +148,8 @@ local function CountDiminishingReturns(eventType, srcGUID, srcFlags, dstGUID, ds
         end
         if eventType == "UNIT_DIED" then
             clearDRs(dstGUID)
+            buffCache[dstGUID] = nil
+            buffCacheValid[dstGUID] = nil
         end
     end
 end
