@@ -19,6 +19,11 @@ lib.spells = lib.spells or {
 }
 lib.npc_spells = lib.npc_spells or {}
 
+lib.buffCache = lib.buffCache or setmetatable({}, weakKeysMeta)
+local buffCache = lib.buffCache
+lib.buffCacheValid = lib.buffCacheValid or setmetatable({}, weakKeysMeta)
+local buffCacheValid = lib.buffCacheValid
+
 local f = lib.frame
 local callbacks = lib.callbacks
 local guids = lib.guids
@@ -29,6 +34,7 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local UnitGUID = UnitGUID
 local UnitAura = UnitAura
 local GetTime = GetTime
+local unpack = unpack
 
 f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
@@ -169,7 +175,9 @@ function f:UNIT_POWER_UPDATE(event,unit, ptype)
     end
 end
 
---------------------------------------------
+---------------------------
+-- COMBAT LOG
+---------------------------
 
 local function cleanDuration(duration, spellID, srcGUID)
     if type(duration) == "function" then
@@ -277,11 +285,15 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
             end
             isDstFriendly = false
             if not isDstFriendly and auraType == "BUFF" then
+                -- invalidate buff cache
+                buffCacheValid[dstGUID] = nil
+
                 -- shitty unit loopkup
                 local unit
                 if dstGUID == UnitGUID("target") then
                     unit = "target"
                 end
+
                 if unit then
                     callbacks:Fire("UNIT_BUFF", unit)
                 end
@@ -293,16 +305,74 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
     end
 end
 
-function lib:GetGUIDAuraTime(dstGUID, spellID)
-    -- local guid = UnitGUID(unit)
-    -- if activeSpellLocks[guid] then
-    --     local spellID, duration, expirationTime = unpack(activeSpellLocks[guid])
-    --     if GetTime() > expirationTime then return nil end
-    --     local name, _, icon = GetSpellInfo(spellID)
-    --     return spellID, name, icon, duration, expirationTime
-    -- end
+---------------------------
+-- ENEMY BUFFS
+---------------------------
+
+local makeBuffInfo = function(spellID, bt)
+    local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spellID)
+    -- buffName, icon, count, debuffType, duration, expirationTime, caster, canStealOrPurge, _ , spellId
+    return { name, icon, 1, nil, bt[1], bt[2], nil, nil, nil, spellID }
 end
 
+local function RegenerateBuffList(dstGUID)
+    local guidTable = guids[dstGUID]
+    if not guidTable then
+        return
+    end
+
+    local buffs = {}
+    for spellID, t in pairs(guidTable) do
+        if t.applications then
+            for srcGUID, auraTable in pairs(t.applications) do
+                if auraTable[3] == "BUFF" then -- TODO and if not expired
+                    table.insert(buffs, makeBuffInfo(spellID, buffTable))
+                end
+            end
+        else
+            if t[3] == "BUFF" then
+                table.insert(buffs, makeBuffInfo(spellID, t))
+            end
+        end
+    end
+
+    buffCache[dstGUID] = buffs
+    buffCacheValid[dstGUID] = true
+end
+
+function lib.UnitAuraDirect(unit, index, filter)
+    if not UnitIsFriend("player", unit) and filter == "HELPFUL" and not UnitAura(unit, 1, filter) then
+        local unitGUID = UnitGUID(unit)
+        if not buffCacheValid[unitGUID] then
+            RegenerateBuffList(unitGUID)
+        end
+
+        local buffCacheHit = buffCache[unitGUID]
+        if buffCacheHit then
+            local buffReturns = buffCache[unitGUID][index]
+            if buffReturns then
+                return unpack(buffReturns)
+            end
+        end
+    else
+        return UnitAura(unit, index, filter)
+    end
+end
+
+function lib:UnitAura(...)
+    return self.UnitAuraDirect(...)
+end
+
+
+function callbacks.OnUsed()
+end
+
+function callbacks.OnUnused()
+end
+
+---------------------------
+-- PUBLIC FUNCTIONS
+---------------------------
 local function GetGUIDAuraTime(dstGUID, spellID, srcGUID, isStacking)
     local guidTable = guids[dstGUID]
     if guidTable then
@@ -365,46 +435,3 @@ function lib:UnregisterFrame(frame)
 end
 
 
-local makeBuffInfo = function(spellID, bt)
-    local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spellID)
-    return { name, icon, bt[3], bt[1], bt[2], spellID }
-end
-
-function lib:GetUnitBuffs(unit)
-    local dstGUID = UnitGUID(unit)
-    local guidTable = guids[dstGUID]
-    if not guidTable then
-        return
-    end
-
-    -- make a pass to make sure to remove expired applications?
-
-    local buffs = {}
-    for spellID, t in pairs(guidTable) do
-        if t.applications then
-            for srcGUID, auraTable in pairs(t.applications) do
-                if auraTable[3] == "BUFF" then
-                    table.insert(buffs, makeBuffInfo(spellID, buffTable))
-                end
-            end
-        else
-            if t[3] == "BUFF" then
-                table.insert(buffs, makeBuffInfo(spellID, t))
-            end
-        end
-    end
-    return buffs
-end
-
-local f2 = CreateFrame("Frame", nil, f2)
-f2:SetScript("OnEvent", function(self)
-    callbacks:Fire("UNIT_BUFF", "target")
-end)
-
-function callbacks.OnUsed()
-    f2:RegisterEvent("PLAYER_TARGET_CHANGED")
-end
-
-function callbacks.OnUnused()
-    f2:UnregisterEvent("PLAYER_TARGET_CHANGED")
-end
