@@ -279,7 +279,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
             end
         end
         if opts then
-            print(eventType, srcGUID, "=>", dstName, spellID, spellName, auraType )
+            -- print(eventType, srcGUID, "=>", dstName, spellID, spellName, auraType )
             if  eventType == "SPELL_AURA_REFRESH" or
                 eventType == "SPELL_AURA_APPLIED" or
                 eventType == "SPELL_AURA_APPLIED_DOSE" then
@@ -297,8 +297,9 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
                 if dstGUID == UnitGUID("target") then
                     callbacks:Fire("UNIT_BUFF", "target")
                 end
-                if nameplateUnitMap[dstGUID] then
-                    callbacks:Fire("UNIT_BUFF", nameplateUnitMap[dstGUID])
+                local nameplateUnit = nameplateUnitMap[dstGUID]
+                if nameplateUnit then
+                    callbacks:Fire("UNIT_BUFF", nameplateUnit)
                 end
             end
         end
@@ -367,7 +368,6 @@ end
 
 function f:NAME_PLATE_UNIT_ADDED(event, unit)
     local unitGUID = UnitGUID(unit)
-    print(event, unitGUID, unit)
     nameplateUnitMap[unitGUID] = unit
 end
 function f:NAME_PLATE_UNIT_REMOVED(event, unit)
