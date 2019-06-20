@@ -6,6 +6,10 @@ if lib:GetDataVersion(Type) >= Version then return end
 
 
 lib.npc_spells = {
+    -- MC
+    [20475] = 8, -- Living Bomb
+
+
     [7057] = 300, -- Haunting Spirits
     [17013] = 1800, -- Agamaggan's Agility
     [3547] = 8, -- Enraging Memories

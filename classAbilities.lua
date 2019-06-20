@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 10
+local Type, Version = "SpellTable", 11
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -25,15 +25,26 @@ Spell({ 13099, 13138, 16566 }, {
 Spell({ 4068, 19769 }, { duration = 3 }) -- Iron Grenade, Thorium
 -- too lazy to add more, everyone is using iron anyway
 
+Spell( 26635 ,{ duration = 10, type = "BUFF" }) -- Berserking
+Spell( 20600 ,{ duration = 20, type = "BUFF" }) -- Perception
+Spell( 23234 ,{ duration = 15, type = "BUFF" }) -- Blood Fury
+Spell( 23230 ,{ duration = 25 }) -- Blood Fury debuff
+Spell( 20594 ,{ duration = 8, type = "BUFF" }) -- Stoneform
+Spell( 20549 ,{ duration = 2 }) -- War Stomp
+Spell( 7744, { duration = 5, type = "BUFF" }) -- Will of the Forsaken
 -------------
 -- PRIEST
 -------------
+
+Spell({ 2652, 19261, 19262, 19264, 19265, 19266 }, { duration = 600, type = "BUFF" }) -- Touch of Weakness
+Spell({ 13896, 19271, 19273, 19274, 19275 }, { duration = 15, type = "BUFF" }) -- Feedback
+Spell({ 2651, 19289, 19291, 19292, 19293 }, { duration = 15, type = "BUFF" }) -- Elune's Grace
 
 Spell( 6346, { duration = 600, type = "BUFF" }) -- Fear Ward
 Spell({ 7001, 27873, 27874 }, { duration = 10, type = "BUFF" }) -- Lightwell Renew
 Spell( 552, { duration = 20, type = "BUFF" }) -- Abolish Disease
 Spell({ 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 }, {duration = 30, type = "BUFF" }) -- PWS
-Spell( 6788, { duration = 15, type = "DEBUFF" }) -- Weakened Soul
+Spell( 6788, { duration = 15 }) -- Weakened Soul
 Spell({ 139, 6074, 6075, 6076, 6077, 6078, 10927, 10928, 10929, 25315 }, { duration = 15, type = "BUFF" }) -- Renew
 
 Spell( 15487, { duration = 5 }) -- Silence
