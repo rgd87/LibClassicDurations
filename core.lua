@@ -356,7 +356,7 @@ local FillInDuration = function(unit, buffName, icon, count, debuffType, duratio
 end
 
 function lib.UnitAuraDirect(unit, index, filter)
-    if not UnitIsFriend("player", unit) and filter == "HELPFUL" and not UnitAura(unit, 1, filter) then
+    if filter == "HELPFUL" and not UnitIsFriend("player", unit) and not UnitAura(unit, 1, filter) then
         local unitGUID = UnitGUID(unit)
         if not buffCacheValid[unitGUID] then
             RegenerateBuffList(unitGUID)
