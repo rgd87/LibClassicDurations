@@ -5,7 +5,7 @@ Description: tracking expiration times
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 4
+local MAJOR, MINOR = "LibClassicDurations", 5
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -39,6 +39,7 @@ local UnitGUID = UnitGUID
 local UnitAura = UnitAura
 local GetTime = GetTime
 local unpack = unpack
+local GetAuraDurationByUnitDirect
 
 f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
@@ -343,6 +344,17 @@ local function RegenerateBuffList(dstGUID)
     buffCacheValid[dstGUID] = true
 end
 
+local FillInDuration = function(unit, buffName, icon, count, debuffType, duration, expirationTime, caster, canStealOrPurge, nps, spellId, ...)
+    if buffName then
+        local durationNew, expirationTimeNew = GetAuraDurationByUnitDirect(unit, spellId, caster)
+        if duration == 0 and durationNew then
+            duration = durationNew
+            expirationTime = expirationTimeNew
+        end
+        return buffName, icon, count, debuffType, duration, expirationTime, caster, canStealOrPurge, nps, spellId, ...
+    end
+end
+
 function lib.UnitAuraDirect(unit, index, filter)
     if not UnitIsFriend("player", unit) and filter == "HELPFUL" and not UnitAura(unit, 1, filter) then
         local unitGUID = UnitGUID(unit)
@@ -358,7 +370,7 @@ function lib.UnitAuraDirect(unit, index, filter)
             end
         end
     else
-        return UnitAura(unit, index, filter)
+        return FillInDuration(unit, UnitAura(unit, index, filter))
     end
 end
 
@@ -414,13 +426,19 @@ local function GetGUIDAuraTime(dstGUID, spellID, srcGUID, isStacking)
     end
 end
 
-function lib:GetAuraDurationByUnit(unit, spellID, casterUnit)
+function lib.GetAuraDurationByUnitDirect(unit, spellID, casterUnit)
     assert(spellID, "spellID is nil")
     local opts = spells[spellID]
     if not opts then return end
     local dstGUID = UnitGUID(unit)
     local srcGUID = casterUnit and UnitGUID(casterUnit)
     return GetGUIDAuraTime(dstGUID, spellID, srcGUID, opts.stacking)
+end
+GetAuraDurationByUnitDirect = lib.GetAuraDurationByUnitDirect
+
+function lib:GetAuraDurationByUnit(...)
+    return self.GetAuraDurationByUnitDirect(...)
+
 end
 function lib:GetAuraDurationByGUID(dstGUID, spellID, srcGUID)
     local opts = spells[spellID]
