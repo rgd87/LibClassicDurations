@@ -12,17 +12,14 @@ if not lib then return end
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.frame = lib.frame or CreateFrame("Frame")
 
-local weakKeysMeta = { __mode = "k" }
-lib.guids = lib.guids or setmetatable({}, weakKeysMeta)
-lib.spells = lib.spells or {
-
-}
+lib.guids = lib.guids or {}
+lib.spells = lib.spells or {}
 lib.npc_spells = lib.npc_spells or {}
 
-lib.buffCache = lib.buffCache or setmetatable({}, weakKeysMeta)
+lib.buffCache = lib.buffCache or {}
 local buffCache = lib.buffCache
 
-lib.buffCacheValid = lib.buffCacheValid or setmetatable({}, weakKeysMeta)
+lib.buffCacheValid = lib.buffCacheValid or {}
 local buffCacheValid = lib.buffCacheValid
 
 lib.nameplateUnitMap = lib.nameplateUnitMap or {}
@@ -86,7 +83,7 @@ end
 local bit_band = bit.band
 local DRResetTime = 18.4
 
-local DRInfo = setmetatable({}, weakKeysMeta)
+local DRInfo = {}
 local COMBATLOG_OBJECT_TYPE_PLAYER = COMBATLOG_OBJECT_TYPE_PLAYER
 local COMBATLOG_OBJECT_REACTION_FRIENDLY = COMBATLOG_OBJECT_REACTION_FRIENDLY
 
@@ -203,7 +200,7 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
 
     local guidTable = guids[dstGUID]
     if not guidTable then
-        guids[dstGUID] = setmetatable({}, weakKeysMeta)
+        guids[dstGUID] = {}
         guidTable = guids[dstGUID]
     end
 
