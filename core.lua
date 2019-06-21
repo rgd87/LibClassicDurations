@@ -16,6 +16,9 @@ lib.guids = lib.guids or {}
 lib.spells = lib.spells or {}
 lib.npc_spells = lib.npc_spells or {}
 
+lib.DRInfo = lib.DRInfo or {}
+local DRInfo = lib.DRInfo
+
 lib.buffCache = lib.buffCache or {}
 local buffCache = lib.buffCache
 
@@ -24,6 +27,9 @@ local buffCacheValid = lib.buffCacheValid
 
 lib.nameplateUnitMap = lib.nameplateUnitMap or {}
 local nameplateUnitMap = lib.nameplateUnitMap
+
+lib.guidAccessTimes = lib.guidAccessTimes or {}
+local guidAccessTimes = lib.guidAccessTimes
 
 local f = lib.frame
 local callbacks = lib.callbacks
@@ -35,6 +41,7 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local UnitGUID = UnitGUID
 local UnitAura = UnitAura
 local GetTime = GetTime
+local tinsert = table.insert
 local unpack = unpack
 local GetAuraDurationByUnitDirect
 local enableEnemyBuffTracking = false
@@ -76,14 +83,34 @@ lib.Talent = lib.Talent or function (...)
     return 0
 end
 
+--------------------------
+-- OLD GUIDs PURGE
+--------------------------
+
+local function purgeOldGUIDs()
+    local now = GetTime()
+    local deleted = {}
+    for guid, lastAccessTime in pairs(guidAccessTimes) do
+        if lastAccessTime + 1800 < now then
+            guids[guid] = nil
+            nameplateUnitMap[guid] = nil
+            buffCacheValid[guid] = nil
+            buffCache[guid] = nil
+            DRInfo[guid] = nil
+            tinsert(deleted, guid)
+        end
+    end
+    for _, guid in ipairs(deleted) do
+        guidAccessTimes[guid] = nil
+    end
+end
+lib.purgeTicker = lib.purgeTicker or C_Timer.NewTicker( 900, purgeOldGUIDs)
 
 --------------------------
 -- DIMINISHING RETURNS
 --------------------------
 local bit_band = bit.band
 local DRResetTime = 18.4
-
-local DRInfo = {}
 local COMBATLOG_OBJECT_TYPE_PLAYER = COMBATLOG_OBJECT_TYPE_PLAYER
 local COMBATLOG_OBJECT_REACTION_FRIENDLY = COMBATLOG_OBJECT_REACTION_FRIENDLY
 
@@ -249,13 +276,15 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     local now = GetTime()
     local expirationTime
     if duration == 0 then
-        expirationTime = now + 1800 -- 30m
+        expirationTime = now + 3600 -- 60m
     else
         expirationTime = now + duration
     end
     applicationTable[1] = duration
     applicationTable[2] = expirationTime
     applicationTable[3] = auraType
+
+    guidAccessTimes[dstGUID] = now
 end
 
 local function NotifyGUIDBuffChange(dstGUID)
@@ -315,9 +344,11 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         guids[dstGUID] = nil
         buffCache[dstGUID] = nil
         buffCacheValid[dstGUID] = nil
+        guidAccessTimes[dstGUID] = nil
         if enableEnemyBuffTracking and not isDstFriendly then
             NotifyGUIDBuffChange(dstGUID)
         end
+        nameplateUnitMap[dstGUID] = nil
     end
 end
 
@@ -353,12 +384,12 @@ local function RegenerateBuffList(dstGUID)
         if t.applications then
             for srcGUID, auraTable in pairs(t.applications) do
                 if shouldDisplayAura(auraTable) then
-                    table.insert(buffs, makeBuffInfo(spellID, auraTable))
+                    tinsert(buffs, makeBuffInfo(spellID, auraTable))
                 end
             end
         else
             if shouldDisplayAura(t) then
-                table.insert(buffs, makeBuffInfo(spellID, t))
+                tinsert(buffs, makeBuffInfo(spellID, t))
             end
         end
     end
