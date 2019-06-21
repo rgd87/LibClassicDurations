@@ -5,7 +5,7 @@ Description: tracking expiration times
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 5
+local MAJOR, MINOR = "LibClassicDurations", 6
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -40,6 +40,7 @@ local UnitAura = UnitAura
 local GetTime = GetTime
 local unpack = unpack
 local GetAuraDurationByUnitDirect
+local enableEnemyBuffTracking = false
 
 f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
@@ -245,13 +246,18 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     end
 
     local duration = cleanDuration(opts.duration, spellID, srcGUID)
-    if not duration or duration == 0 then
+    if not duration then
         return SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, true)
     end
     local mul = getDRMul(dstGUID, spellID)
     duration = duration * mul
     local now = GetTime()
-    local expirationTime = now + duration
+    local expirationTime
+    if duration == 0 then
+        expirationTime = now + 1800 -- 30m
+    else
+        expirationTime = now + duration
+    end
     applicationTable[1] = duration
     applicationTable[2] = expirationTime
     applicationTable[3] = auraType
@@ -277,6 +283,8 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
             local npc_aura_duration = npc_spells[spellID]
             if npc_aura_duration then
                 opts = { duration = npc_aura_duration }
+            elseif enableEnemyBuffTracking and not isDstFriendly and auraType == "BUFF" then
+                opts = { duration = 0 } -- it'll be accepted but as an indefinite aura
             end
         end
         if opts then
@@ -290,8 +298,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
             -- elseif eventType == "SPELL_AURA_REMOVED_DOSE" then
                 -- self:RemoveDose(srcGUID, dstGUID, spellID, spellName, auraType, amount)
             end
-            isDstFriendly = false
-            if not isDstFriendly and auraType == "BUFF" then
+            if enableEnemyBuffTracking and not isDstFriendly and auraType == "BUFF" then
                 -- invalidate buff cache
                 buffCacheValid[dstGUID] = nil
 
@@ -315,8 +322,20 @@ end
 ---------------------------
 local makeBuffInfo = function(spellID, bt)
     local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spellID)
+    local duration = bt[1]
+    local expirationTime = duration == 0 and 0 or bt[2]
     -- buffName, icon, count, debuffType, duration, expirationTime, caster, canStealOrPurge, _ , spellId
-    return { name, icon, 1, nil, bt[1], bt[2], nil, nil, nil, spellID }
+    return { name, icon, 1, nil, duration, expirationTime, nil, nil, nil, spellID }
+end
+
+local shouldDisplayAura = function(auraTable)
+    if auraTable[3] == "BUFF" then
+        local now = GetTime()
+        -- local duration = auraTable[1]
+        local expirationTime = auraTable[2]
+        return expirationTime > now
+    end
+    return false
 end
 
 local function RegenerateBuffList(dstGUID)
@@ -329,12 +348,12 @@ local function RegenerateBuffList(dstGUID)
     for spellID, t in pairs(guidTable) do
         if t.applications then
             for srcGUID, auraTable in pairs(t.applications) do
-                if auraTable[3] == "BUFF" then -- TODO and if not expired
-                    table.insert(buffs, makeBuffInfo(spellID, buffTable))
+                if shouldDisplayAura(auraTable) then
+                    table.insert(buffs, makeBuffInfo(spellID, auraTable))
                 end
             end
         else
-            if t[3] == "BUFF" then
+            if shouldDisplayAura(t) then
                 table.insert(buffs, makeBuffInfo(spellID, t))
             end
         end
@@ -390,10 +409,12 @@ function f:NAME_PLATE_UNIT_REMOVED(event, unit)
 end
 
 function callbacks.OnUsed()
+    enableEnemyBuffTracking = true
     f:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     f:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 end
 function callbacks.OnUnused()
+    enableEnemyBuffTracking = false
     f:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
     f:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
 end
