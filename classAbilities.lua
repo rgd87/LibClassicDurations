@@ -36,12 +36,12 @@ Spell( 7744, { duration = 5, type = "BUFF" }) -- Will of the Forsaken
 -- PRIEST
 -------------
 
-Spell({ 1243, 1244, 1245, 2791, 10937, 10938 }, { duration = 1800, type = "BUFF" }) -- Power Word: Fortitude and Prayer of Fortitude
-Spell({ 21562, 21564 }, { duration = 3600, type = "BUFF" }) -- Prayer of Fortitude
-Spell({ 976, 10957, 10958 }, { duration = 600, type = "BUFF" }) -- Shadow Protection
-Spell( 27683, { duration = 600, type = "BUFF" }) -- Prayer of Shadow Protection
-Spell({ 14752, 14818, 14819, 27841 }, { duration = 1800, type = "BUFF" }) -- Divine Spirit
-Spell( 27681, { duration = 3600, type = "BUFF" }) -- Prayer of Spirit
+-- Spell({ 1243, 1244, 1245, 2791, 10937, 10938 }, { duration = 1800, type = "BUFF" }) -- Power Word: Fortitude and Prayer of Fortitude
+-- Spell({ 21562, 21564 }, { duration = 3600, type = "BUFF" }) -- Prayer of Fortitude
+-- Spell({ 976, 10957, 10958 }, { duration = 600, type = "BUFF" }) -- Shadow Protection
+-- Spell( 27683, { duration = 600, type = "BUFF" }) -- Prayer of Shadow Protection
+-- Spell({ 14752, 14818, 14819, 27841 }, { duration = 1800, type = "BUFF" }) -- Divine Spirit
+-- Spell( 27681, { duration = 3600, type = "BUFF" }) -- Prayer of Spirit
 
 Spell({ 14743, 27828 }, { duration = 6, type = "BUFF" }) -- Focused Casting (Martyrdom)
 Spell( 27827, { duration = 10, type = "BUFF" }) -- Spirit of Redemption
@@ -90,8 +90,8 @@ Spell( 15286 ,{ duration = 60 }) -- Vampiric Embrace
 -- DRUID
 ---------------
 
-Spell({ 1126, 5232, 5234, 6756, 8907, 9884, 9885 }, { duration = 1800, type = "BUFF" }) -- Mark of the Wild
-Spell({ 21849, 21850 }, { duration = 3600, type = "BUFF" }) -- Gift of the Wild
+-- Spell({ 1126, 5232, 5234, 6756, 8907, 9884, 9885 }, { duration = 1800, type = "BUFF" }) -- Mark of the Wild
+-- Spell({ 21849, 21850 }, { duration = 3600, type = "BUFF" }) -- Gift of the Wild
 
 Spell({ 16689, 16810, 16811, 16812, 16813, 17329 }, { duration = 45, type = "BUFF" }) -- Nature's Grasp
 Spell( 16864, { duration = 600, type = "BUFF" }) -- Omen of Clarity
@@ -305,9 +305,9 @@ Spell({ 1776, 1777, 8629, 11285, 11286 }, {
 -- WARLOCK
 ------------
 
-Spell({ 20707, 20762, 20763, 20764, 20765 }, { duration = 10, type = "BUFF" }) -- Soulstone Resurrection
-Spell({ 687, 696, 706, 1086, 11733, 11734, 11735 }, { duration = 1800, type = "BUFF" }) -- Demon SKin/Armor
-Spell({ 18791, 18789, 18792, 18790 }, { duration = 1800, type = "BUFF" })  -- Touch of Shadow, Burning Wish, Fel Energy, Fel Stamina
+Spell({ 20707, 20762, 20763, 20764, 20765 }, { duration = 1800, type = "BUFF" }) -- Soulstone Resurrection
+-- Spell({ 687, 696, 706, 1086, 11733, 11734, 11735 }, { duration = 1800, type = "BUFF" }) -- Demon SKin/Armor
+-- Spell({ 18791, 18789, 18792, 18790 }, { duration = 1800, type = "BUFF" })  -- Touch of Shadow, Burning Wish, Fel Energy, Fel Stamina
 
 --SKIPPING: Drain Life, Mana, Soul, Enslave, Health funnel, kilrog
 Spell( 24259 ,{ duration = 3 }) -- Spell Lock Silence
@@ -377,7 +377,7 @@ Spell({ 17877, 18867, 18868, 18869, 18870, 18871 }, { duration = 5 }) -- Shadowb
 -- SHAMAN
 ---------------
 
-Spell({ 324, 325, 905, 945, 8134, 10431, 10432 }, { duration = 600, type = "BUFF" }) -- Lightning Shield
+-- Spell({ 324, 325, 905, 945, 8134, 10431, 10432 }, { duration = 600, type = "BUFF" }) -- Lightning Shield
 Spell( 546 ,{ duration = 600, type = "BUFF" }) -- Water Walkign
 Spell( 131 ,{ duration = 600, type = "BUFF" }) -- Water Breahing
 Spell({ 16257, 16277, 16278, 16279, 16280 }, { duration = 15, type = "BUFF" }) -- Flurry
@@ -392,7 +392,7 @@ Spell( 29203 ,{ duration = 15, type = "BUFF" }) -- Healing Way
 -- PALADIN
 --------------
 
-Spell( 25780, { duration = 1800, type = "BUFF" }) -- Righteous Fury
+-- Spell( 25780, { duration = 1800, type = "BUFF" }) -- Righteous Fury
 
 Spell({ 19740, 19834, 19835, 19836, 19837, 19838, 25291 }, { duration = 300, type = "BUFF" }) -- Blessing of Might
 Spell({ 25782, 25916 }, { duration = 900, type = "BUFF" }) -- Greater Blessing of Might
@@ -489,10 +489,8 @@ Spell({ 20050, 20052, 20053, 20054, 20055 }, { duration = 8, type = "BUFF" }) --
 -- HUNTER
 -------------
 
-
-Spell({ 19506, 20905, 20906 }, { duration = 1800, type = "BUFF" }) -- Trueshot Aura
+-- Spell({ 19506, 20905, 20906 }, { duration = 1800, type = "BUFF" }) -- Trueshot Aura
 --SKIPPING: Frenzy
-
 Spell({ 1130, 14323, 14324, 14325 }, { duration = 120 }) -- Hunter's Mark
 Spell(19263, { duration = 10, type = "BUFF" }) -- Deterrence
 Spell(3045, { duration = 15, type = "BUFF" }) -- Rapid Fire
@@ -535,13 +533,13 @@ Spell(24394, { duration = 3 }) -- Intimidation
 -- MAGE
 -------------
 
+-- Spell({ 1459, 1460, 1461, 10156, 10157 }, { duration = 1800, type = "BUFF" }) -- Arcane Intellect
+-- Spell( 23028, { duration = 1800, type = "BUFF" }) -- Arcane Brilliance
+-- Spell({ 6117, 22782, 22783 }, { duration = 1800, type = "BUFF" }) -- Mage Armor
+-- Spell({ 168, 7300, 7301, 7302, 7320, 10219, 10220 }, { duration = 1800, type = "BUFF" }) -- Frost/Ice Armor
 
-Spell({ 1459, 1460, 1461, 10156, 10157 }, { duration = 1800, type = "BUFF" }) -- Arcane Intellect
-Spell( 23028, { duration = 1800, type = "BUFF" }) -- Arcane Brilliance
 Spell( 2855, { duration = 1800, type = "BUFF" }) -- Detect Magic
-Spell({ 6117, 22782, 22783 }, { duration = 1800, type = "BUFF" }) -- Mage Armor
 Spell( 130, { duration = 1800, type = "BUFF" }) -- Slow Fall
-Spell({ 168, 7300, 7301, 7302, 7320, 10219, 10220 }, { duration = 1800, type = "BUFF" }) -- Frost/Ice Armor
 
 Spell({ 133, 143, 145, 3140, 8400, 8401, 8402, 10148, 10149, 10150, 10151, 25306 }, {
     duration = function(spellID)
