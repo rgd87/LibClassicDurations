@@ -154,8 +154,6 @@ local function CountDiminishingReturns(eventType, srcGUID, srcFlags, dstGUID, ds
         end
         if eventType == "UNIT_DIED" then
             clearDRs(dstGUID)
-            buffCache[dstGUID] = nil
-            buffCacheValid[dstGUID] = nil
         end
     end
 end
@@ -263,6 +261,16 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     applicationTable[3] = auraType
 end
 
+local function NotifyGUIDBuffChange(dstGUID)
+    if dstGUID == UnitGUID("target") then
+        callbacks:Fire("UNIT_BUFF", "target")
+    end
+    local nameplateUnit = nameplateUnitMap[dstGUID]
+    if nameplateUnit then
+        callbacks:Fire("UNIT_BUFF", nameplateUnit)
+    end
+end
+
 ---------------------------
 -- COMBAT LOG HANDLER
 ---------------------------
@@ -302,18 +310,17 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
                 -- invalidate buff cache
                 buffCacheValid[dstGUID] = nil
 
-                if dstGUID == UnitGUID("target") then
-                    callbacks:Fire("UNIT_BUFF", "target")
-                end
-                local nameplateUnit = nameplateUnitMap[dstGUID]
-                if nameplateUnit then
-                    callbacks:Fire("UNIT_BUFF", nameplateUnit)
-                end
+                NotifyGUIDBuffChange(dstGUID)
             end
         end
     end
     if eventType == "UNIT_DIED" then
         guids[dstGUID] = nil
+        buffCache[dstGUID] = nil
+        buffCacheValid[dstGUID] = nil
+        if enableEnemyBuffTracking and not isDstFriendly then
+            NotifyGUIDBuffChange(dstGUID)
+        end
     end
 end
 
@@ -375,7 +382,7 @@ local FillInDuration = function(unit, buffName, icon, count, debuffType, duratio
 end
 
 function lib.UnitAuraDirect(unit, index, filter)
-    if filter == "HELPFUL" and not UnitIsFriend("player", unit) and not UnitAura(unit, 1, filter) then
+    if enableEnemyBuffTracking and filter == "HELPFUL" and not UnitIsFriend("player", unit) and not UnitAura(unit, 1, filter) then
         local unitGUID = UnitGUID(unit)
         if not buffCacheValid[unitGUID] then
             RegenerateBuffList(unitGUID)
