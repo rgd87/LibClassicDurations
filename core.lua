@@ -1,7 +1,63 @@
 --[================[
 LibClassicDurations
 Author: d87
-Description: tracking expiration times
+Description: Tracks all aura applications in combat log and provides duration, expiration time.
+And additionally enemy buffs info.
+
+Usage example 1:
+-----------------
+
+    -- Simply get the expiration time and duration
+
+    local LibClassicDurations = LibStub("LibClassicDurations")
+    LibClassicDurations:Register("YourAddon") -- tell library it's being used and should start working
+
+    hooksecurefunc("CompactUnitFrame_UtilSetBuff", function(buffFrame, unit, index, filter)
+        local name, _, _, _, duration, expirationTime, unitCaster, _, _, spellId = UnitBuff(unit, index, filter);
+
+        local durationNew, expirationTimeNew = LibClassicDurations:GetAuraDurationByUnit(unit, spellId, unitCaster)
+        if duration == 0 and durationNew then
+            duration = durationNew
+            expirationTime = expirationTimeNew
+        end
+
+        local enabled = expirationTime and expirationTime ~= 0;
+        if enabled then
+            local startTime = expirationTime - duration;
+            CooldownFrame_Set(buffFrame.cooldown, startTime, duration, true);
+        else
+            CooldownFrame_Clear(buffFrame.cooldown);
+        end
+    end)
+
+Usage example 2:
+-----------------
+
+    -- Use library's UnitAura replacement function, that shows enemy buffs and
+    -- automatically tries to add duration to everything else
+
+    local LCD = LibStub("LibClassicDurations")
+    LCD:Register("YourAddon") -- tell library it's being used and should start working
+
+
+    local f = CreateFrame("frame", nil, UIParent)
+    f:RegisterUnitEvent("UNIT_AURA", "target")
+
+    local EventHandler = function(self, event, unit)
+        for i=1,100 do
+            local name, _, _, _, duration, expirationTime, _, _, _, spellId = LCD:UnitAura(unit, i, "HELPFUL")
+            if not name then break end
+            print(name, duration, expirationTime)
+        end
+    end
+
+    f:SetScript("OnEvent", EventHandler)
+
+    -- NOTE: Enemy buff tracking won't start until you register UNIT_BUFF
+    LCD.RegisterCallback(addon, "UNIT_BUFF", function(event, unit)
+        EventHandler(f, "UNIT_AURA", unit)
+    end)
+
 --]================]
 
 
@@ -345,6 +401,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         buffCache[dstGUID] = nil
         buffCacheValid[dstGUID] = nil
         guidAccessTimes[dstGUID] = nil
+        local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
         if enableEnemyBuffTracking and not isDstFriendly then
             NotifyGUIDBuffChange(dstGUID)
         end
