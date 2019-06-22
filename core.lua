@@ -93,6 +93,10 @@ local guids = lib.guids
 local spells = lib.spells
 local npc_spells = lib.npc_spells
 
+local PURGE_INTERVAL = 900
+local PURGE_THRESHOLD = 1800
+local UNKNOWN_AURA_DURATION = 3600 -- 60m
+
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local UnitGUID = UnitGUID
 local UnitAura = UnitAura
@@ -147,7 +151,7 @@ local function purgeOldGUIDs()
     local now = GetTime()
     local deleted = {}
     for guid, lastAccessTime in pairs(guidAccessTimes) do
-        if lastAccessTime + 1800 < now then
+        if lastAccessTime + PURGE_THRESHOLD < now then
             guids[guid] = nil
             nameplateUnitMap[guid] = nil
             buffCacheValid[guid] = nil
@@ -160,7 +164,7 @@ local function purgeOldGUIDs()
         guidAccessTimes[guid] = nil
     end
 end
-lib.purgeTicker = lib.purgeTicker or C_Timer.NewTicker( 900, purgeOldGUIDs)
+lib.purgeTicker = lib.purgeTicker or C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 
 --------------------------
 -- DIMINISHING RETURNS
@@ -332,7 +336,7 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     local now = GetTime()
     local expirationTime
     if duration == 0 then
-        expirationTime = now + 3600 -- 60m
+        expirationTime = now + UNKNOWN_AURA_DURATION -- 60m
     else
         expirationTime = now + duration
     end
