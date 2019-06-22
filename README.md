@@ -59,4 +59,15 @@ Usage example 2:
         EventHandler(f, "UNIT_AURA", unit)
     end)
 
+
+Embedding in .pkgmeta
+--------------------------
+
+    externals:
+      Libs/LibClassicDurations: https://repos.curseforge.com/wow/libclassicdurations
+
+    ignore:
+      - Libs/LibClassicDurations/README.md
+      - Libs/LibClassicDurations/LibClassicDurations.toc
+
 ![Screenshot](https://i.imgur.com/ZE6IWys.jpg)
