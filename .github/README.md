@@ -66,7 +66,5 @@ Embedding in .pkgmeta
     externals:
       Libs/LibClassicDurations: https://repos.curseforge.com/wow/libclassicdurations
 
-    ignore:
-      - Libs/LibClassicDurations/LibClassicDurations.toc
 
 ![Screenshot](https://i.imgur.com/ZE6IWys.jpg)
