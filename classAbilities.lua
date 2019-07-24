@@ -40,6 +40,19 @@ Spell( 5134, { duration = 10 }) -- Flash Bomb
 Spell( 23097, { duration = 5, type = "BUFF" }) -- Fire Reflector
 Spell( 23131, { duration = 5, type = "BUFF" }) -- Frost Reflector
 Spell( 23132, { duration = 5, type = "BUFF" }) -- Shadow Reflector
+Spell({ 25750, 25747, 25746, 23991 }, { duration = 15, type = "BUFF" }) -- AB Trinkets
+Spell( 23506, { duration = 20, type = "BUFF" }) -- Arena Grand Master trinket
+Spell( 29506, { duration = 20, type = "BUFF" }) -- Burrower's Shell trinket
+Spell( 12733, { duration = 30, type = "BUFF" }) -- Blacksmith trinket
+-- Spell( 15753, { duration = 2 }) -- Linken's Boomerang stun
+-- Spell( 15752, { duration = 10 }) -- Linken's Boomerang disarm
+Spell( 14530, { duration = 10, type = "BUFF" }) -- Nifty Stopwatch
+Spell( 13237, { duration = 3 }) -- Goblin Mortar trinket
+Spell( 14253, { duration = 8, type = "BUFF" }) -- Black Husk Shield
+Spell( 9175, { duration = 15, type = "BUFF" }) -- Swift Boots
+Spell( 13141, { duration = 20, type = "BUFF" }) -- Gnomish Rocket Boots
+Spell( 8892, { duration = 20, type = "BUFF" }) -- Goblin Rocket Boots
+Spell( 9774, { duration = 5, type = "BUFF" }) -- Spider Belt & Ornate Mithril Boots
 
 -------------
 -- RACIALS
@@ -116,7 +129,7 @@ Spell({ 605, 10911, 10912 }, { duration = 60 }) -- Mind Control
 
 -- Spell({ 1126, 5232, 5234, 6756, 8907, 9884, 9885 }, { duration = 1800, type = "BUFF" }) -- Mark of the Wild
 -- Spell({ 21849, 21850 }, { duration = 3600, type = "BUFF" }) -- Gift of the Wild
-
+Spell( 19975, { duration = 12 }) -- Nature's Grasp root
 Spell({ 16689, 16810, 16811, 16812, 16813, 17329 }, { duration = 45, type = "BUFF" }) -- Nature's Grasp
 Spell( 16864, { duration = 600, type = "BUFF" }) -- Omen of Clarity
 Spell( 16870, { duration = 15, type = "BUFF" }) -- Clearcasting from OoC
