@@ -125,6 +125,7 @@ function lib:GetDataVersion(dataType)
     return SpellDataVersions[dataType] or 0
 end
 
+local Spell = Spell
 
 lib.AddAura = function(id, opts)
     if not opts then return end
