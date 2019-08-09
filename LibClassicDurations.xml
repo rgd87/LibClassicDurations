@@ -3,6 +3,10 @@
 	<Script file="core.lua"/>
 	<Script file="spellNameToID_enUS.lua"/>
 	<Script file="spellNameToID_ruRU.lua"/>
+	<Script file="spellNameToID_deDE.lua"/>
+	<Script file="spellNameToID_esES.lua"/>
+	<Script file="spellNameToID_frFR.lua"/>
+	<Script file="spellNameToID_koKR.lua"/>
 	<Script file="classAbilities.lua"/>
 	<Script file="npcAbilities.lua"/>
 	<Script file="diminishingReturns.lua"/>
