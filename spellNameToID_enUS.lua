@@ -1,3 +1,5 @@
+if GetLocale() ~= "enUS" then return end
+
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 

@@ -71,6 +71,7 @@ lib.frame = lib.frame or CreateFrame("Frame")
 lib.guids = lib.guids or {}
 lib.spells = lib.spells or {}
 lib.npc_spells = lib.npc_spells or {}
+lib.spellNameToID = {}
 
 lib.DRInfo = lib.DRInfo or {}
 local DRInfo = lib.DRInfo
@@ -153,6 +154,10 @@ lib.AddAura = lib.AddAura or function(id, opts)
         spells[id] = opts
     end
 end
+
+-- C_Timer.After(5, function()
+--     NugHealthDB.LCDDUMP = table.concat(DUMP_TABLE, "\n")
+-- end)
 
 lib.Talent = lib.Talent or function (...)
     for i=1, 5 do
