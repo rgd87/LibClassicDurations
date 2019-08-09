@@ -61,7 +61,7 @@ Usage example 2:
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 7
+local MAJOR, MINOR = "LibClassicDurations", 8
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -71,7 +71,7 @@ lib.frame = lib.frame or CreateFrame("Frame")
 lib.guids = lib.guids or {}
 lib.spells = lib.spells or {}
 lib.npc_spells = lib.npc_spells or {}
-lib.spellNameToID = {}
+lib.spellNameToID = lib.npc_spells or {}
 
 lib.DRInfo = lib.DRInfo or {}
 local DRInfo = lib.DRInfo
@@ -126,25 +126,22 @@ function lib:GetDataVersion(dataType)
 end
 
 
--- DUMP_TABLE = {}
-
-lib.AddAura = lib.AddAura or function(id, opts)
+lib.AddAura = function(id, opts)
     if not opts then return end
 
-    -- local lastRankID
-    -- if type(id) == "table" then
-    --     local clones = id
-    --     lastRankID = clones[#clones]
-    -- else
-    --     lastRankID = id
-    -- end
-    -- local mixin = Spell:CreateFromSpellID(lastRankID)
-    -- mixin:ContinueOnSpellLoad(function()
-    --     local spellName = mixin:GetSpellName()
+    local lastRankID
+    if type(id) == "table" then
+        local clones = id
+        lastRankID = clones[#clones]
+    else
+        lastRankID = id
+    end
+    local mixin = Spell:CreateFromSpellID(lastRankID)
+    mixin:ContinueOnSpellLoad(function()
+        local spellName = mixin:GetSpellName()
 
-    --     local str = string.format('["%s"] = %d,', spellName, lastRankID)
-    --     table.insert(DUMP_TABLE, str)
-    -- end)
+        spellNameToID[spellName] = lastRankID
+    end)
 
     if type(id) == "table" then
         for _, spellID in ipairs(id) do
@@ -155,11 +152,8 @@ lib.AddAura = lib.AddAura or function(id, opts)
     end
 end
 
--- C_Timer.After(5, function()
---     NugHealthDB.LCDDUMP = table.concat(DUMP_TABLE, "\n")
--- end)
 
-lib.Talent = lib.Talent or function (...)
+lib.Talent = function (...)
     for i=1, 5 do
         local spellID = select(i, ...)
         if not spellID then break end
@@ -609,6 +603,18 @@ function lib:GetAuraDurationByGUID(dstGUID, spellID, srcGUID)
     local opts = spells[spellID]
     if not opts then return end
     return GetGUIDAuraTime(dstGUID, spellID, srcGUID, opts.stacking)
+end
+
+function lib:GetLastRankSpellIDByName(spellName)
+    return spellNameToID[spellName]
+end
+
+function lib:GetDurationForRank(spellName, spellID, srcGUID)
+    local lastRankID = spellNameToID[spellName]
+    local opts = spells[lastRankID]
+    if opts then
+        return cleanDuration(opts.duration, spellID, srcGUID)
+    end
 end
 
 local activeFrames = {}

@@ -1,14 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="core.lua"/>
-	<Script file="spellNameToID_enUS.lua"/>
-	<Script file="spellNameToID_ruRU.lua"/>
-	<Script file="spellNameToID_deDE.lua"/>
-	<Script file="spellNameToID_esES.lua"/>
-	<Script file="spellNameToID_frFR.lua"/>
-	<Script file="spellNameToID_koKR.lua"/>
-	<Script file="spellNameToID_zhCN.lua"/>
-	<Script file="spellNameToID_zhTW.lua"/>
 	<Script file="classAbilities.lua"/>
 	<Script file="diminishingReturns.lua"/>
 </Ui>
