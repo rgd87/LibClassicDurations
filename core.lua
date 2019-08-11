@@ -600,10 +600,11 @@ function lib:GetAuraDurationByUnit(...)
     return self.GetAuraDurationByUnitDirect(...)
 
 end
-function lib:GetAuraDurationByGUID(dstGUID, spellID, srcGUID)
+function lib:GetAuraDurationByGUID(dstGUID, spellID, srcGUID, spellName)
     local opts = spells[spellID]
     if not opts then return end
-    return GetGUIDAuraTime(dstGUID, spellID, srcGUID, opts.stacking)
+    if not spellName then spellName = GetSpellInfo(spellID) end
+    return GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, opts.stacking)
 end
 
 function lib:GetLastRankSpellIDByName(spellName)
