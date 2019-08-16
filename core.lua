@@ -61,7 +61,7 @@ Usage example 2:
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 9
+local MAJOR, MINOR = "LibClassicDurations", 10
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -567,7 +567,7 @@ local function GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking)
             if isStacking then
                 if srcGUID then
                     applicationTable = spellTable.applications[srcGUID]
-                else -- return some duration
+                elseif spellTable.applications then -- return some duration
                     applicationTable = select(2,next(spellTable.applications))
                 end
             else
