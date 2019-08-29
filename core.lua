@@ -61,7 +61,7 @@ Usage example 2:
 --]================]
 
 
-local MAJOR, MINOR = "LibClassicDurations", 12
+local MAJOR, MINOR = "LibClassicDurations", 13
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -410,15 +410,19 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
     spellID, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
 
     if auraType == "BUFF" or auraType == "DEBUFF" then
+        local isSrcPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0
+
         if spellID == 0 then
             -- so not to rewrite the whole thing to spellnames after the combat log change
             -- just treat everything as max rank id of that spell name
-            spellID = spellNameToID[spellName]
-            if not spellID then
+            if isSrcPlayer then
+                spellID = spellNameToID[spellName]
+            else
                 spellID = NPCspellNameToID[spellName]
-                if not spellID then
-                    return
-                end
+            end
+
+            if not spellID then
+                return
             end
         end
 
@@ -597,7 +601,7 @@ local function GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking)
             local mul = getDRMul(dstGUID, spellID)
             -- local mul = getDRMul(dstGUID, lastRankID)
             duration = duration * mul
-            local expirationTime = startTime + duration + 0.15
+            local expirationTime = startTime + duration
             if GetTime() <= expirationTime then
                 return duration, expirationTime
             end
