@@ -595,10 +595,10 @@ Spell(25999, { duration = 1 }) -- Boar Charge
 -- MAGE
 -------------
 
-Spell({ 1459, 1460, 1461, 10156, 10157 }, { duration = 1800, type = "BUFF" }) -- Arcane Intellect
-Spell( 23028, { duration = 1800, type = "BUFF" }) -- Arcane Brilliance
-Spell({ 6117, 22782, 22783 }, { duration = 1800, type = "BUFF" }) -- Mage Armor
-Spell({ 168, 7300, 7301, 7302, 7320, 10219, 10220 }, { duration = 1800, type = "BUFF" }) -- Frost/Ice Armor
+-- Spell({ 1459, 1460, 1461, 10156, 10157 }, { duration = 1800, type = "BUFF" }) -- Arcane Intellect
+-- Spell( 23028, { duration = 1800, type = "BUFF" }) -- Arcane Brilliance
+-- Spell({ 6117, 22782, 22783 }, { duration = 1800, type = "BUFF" }) -- Mage Armor
+-- Spell({ 168, 7300, 7301, 7302, 7320, 10219, 10220 }, { duration = 1800, type = "BUFF" }) -- Frost/Ice Armor
 
 Spell( 2855, { duration = 1800, type = "BUFF" }) -- Detect Magic
 Spell( 130, { duration = 1800, type = "BUFF" }) -- Slow Fall
