@@ -341,7 +341,7 @@ Spell({ 1943, 8639, 8640, 11273, 11274, 11275 }, { stacking = true,
 }) -- Rupture
 -- SnD -- player-only, can skip
 
-Spell({ 2983, 8696, 11305 }, { duration = 8, type = "BUFF" }) -- Sprint
+Spell({ 2983, 8696, 11305 }, { duration = 15, type = "BUFF" }) -- Sprint
 Spell( 5277 ,{ duration = 15, type = "BUFF" }) -- Evasion
 Spell({ 1776, 1777, 8629, 11285, 11286 }, {
     duration = function(spellID, isSrcPlayer)
@@ -595,10 +595,10 @@ Spell(25999, { duration = 1 }) -- Boar Charge
 -- MAGE
 -------------
 
--- Spell({ 1459, 1460, 1461, 10156, 10157 }, { duration = 1800, type = "BUFF" }) -- Arcane Intellect
--- Spell( 23028, { duration = 1800, type = "BUFF" }) -- Arcane Brilliance
--- Spell({ 6117, 22782, 22783 }, { duration = 1800, type = "BUFF" }) -- Mage Armor
--- Spell({ 168, 7300, 7301, 7302, 7320, 10219, 10220 }, { duration = 1800, type = "BUFF" }) -- Frost/Ice Armor
+Spell({ 1459, 1460, 1461, 10156, 10157 }, { duration = 1800, type = "BUFF" }) -- Arcane Intellect
+Spell( 23028, { duration = 1800, type = "BUFF" }) -- Arcane Brilliance
+Spell({ 6117, 22782, 22783 }, { duration = 1800, type = "BUFF" }) -- Mage Armor
+Spell({ 168, 7300, 7301, 7302, 7320, 10219, 10220 }, { duration = 1800, type = "BUFF" }) -- Frost/Ice Armor
 
 Spell( 2855, { duration = 1800, type = "BUFF" }) -- Detect Magic
 Spell( 130, { duration = 1800, type = "BUFF" }) -- Slow Fall
