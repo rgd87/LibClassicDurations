@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 18
+local Type, Version = "SpellTable", 19
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -622,7 +622,7 @@ Spell({ 133, 143, 145, 3140, 8400, 8401, 8402, 10148, 10149, 10150, 10151, 25306
         else return 8 end
     end
 }) -- Fireball
-
+Spell({ 11366, 12505, 12522, 12523, 12524, 12525, 12526, 18809 }, { duration = 12 }) -- Pyroblast
 
 Spell({ 604, 8450, 8451, 10173, 10174 }, { duration = 600, type = "BUFF" }) -- Dampen Magic
 Spell({ 1008, 8455, 10169, 10170 }, { duration = 600, type = "BUFF" }) -- Amplify Magic
