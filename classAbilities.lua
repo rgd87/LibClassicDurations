@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 22
+local Type, Version = "SpellTable", 23
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -602,7 +602,7 @@ Spell({ 2974, 14267, 14268 }, { duration = 10 }) -- Wing Clip
 Spell(5116, { duration = 4 }) -- Concussive Shot
 Spell(19410, { duration = 3 }) -- Conc Stun
 Spell(24394, { duration = 3 }) -- Intimidation
-Spell(15571, { duration = 4 }) -- Daze from Aspect
+-- Spell(15571, { duration = 4 }) -- Daze from Aspect
 Spell(19185, { duration = 5 }) -- Entrapment
 Spell(25999, { duration = 1 }) -- Boar Charge
 
