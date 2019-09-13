@@ -24,6 +24,8 @@ globals = {
 	"_G",
 	"bit",
 
+	"WOW_PROJECT_CLASSIC",
+	"WOW_PROJECT_ID",
 	-- misc custom
 	"LibStub",
 	-- FrameXML misc
