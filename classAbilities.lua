@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 25
+local Type, Version = "SpellTable", 26
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -171,7 +171,7 @@ Spell({ 339, 1062, 5195, 5196, 9852, 9853 }, {
 }) -- Entangling Roots
 Spell({ 2908, 8955, 9901 }, { duration = 15 }) -- Soothe Animal
 Spell({ 770, 778, 9749, 9907 }, { duration = 40 }) -- Faerie Fire
-Spell({ 17390, 17391, 17392 }, { duration = 40 }) -- Faerie Fire (Feral)
+Spell({ 16857, 17390, 17391, 17392 }, { duration = 40 }) -- Faerie Fire (Feral)
 Spell({ 2637, 18657, 18658 }, {
     duration = function(spellID)
         if spellID == 2637 then return 20
