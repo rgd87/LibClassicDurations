@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 26
+local Type, Version = "SpellTable", 27
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -34,7 +34,8 @@ Spell({ 13099, 13138, 16566 }, {
 Spell( 23451, { duration = 10 }) -- Battleground speed buff
 Spell( 23493, { duration = 10 }) -- Battleground heal buff
 Spell( 23505, { duration = 60 }) -- Battleground damage buff
-Spell({ 4068, 19769 }, { duration = 3 }) -- Iron Grenade, Thorium
+Spell({ 4068 }, { duration = 3 }) -- Iron Grenade
+Spell({ 19769 }, { duration = 3 }) -- Thorium Grenade
 Spell( 6615, { duration = 30, type = "BUFF" }) -- Free Action Potion
 Spell( 24364, { duration = 5, type = "BUFF" }) -- Living Action Potion
 Spell( 3169, { duration = 6, type = "BUFF" }) -- Limited Invulnerability Potion
