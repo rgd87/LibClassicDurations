@@ -8,6 +8,7 @@ Usage example 1:
 -----------------
 
     -- Using UnitAura wrapper
+    local UnitAura = _G.UnitAura
 
     local LibClassicDurations = LibStub("LibClassicDurations", true)
     if LibClassicDurations then
