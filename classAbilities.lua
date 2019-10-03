@@ -467,9 +467,9 @@ Spell( 6358, {
     duration = function(spellID, isSrcPlayer)
         if isSrcPlayer then
             local mul = 1 + Talent(18754, 18755, 18756)*0.1
-            return 20*mul
+            return 15*mul
         else
-            return 20
+            return 15
         end
     end
 }) -- Seduction, varies, Improved Succubus
