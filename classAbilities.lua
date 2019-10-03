@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 30
+local Type, Version = "SpellTable", 32
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -688,7 +688,7 @@ Spell(25999, { duration = 1 }) -- Boar Charge
 -------------
 
 Spell({ 1459, 1460, 1461, 10156, 10157 }, { duration = 1800, type = "BUFF", castFilter = true }) -- Arcane Intellect
-Spell( 23028, { duration = 1800, type = "BUFF", castFilter = true }) -- Arcane Brilliance
+Spell( 23028, { duration = 3600, type = "BUFF", castFilter = true }) -- Arcane Brilliance
 Spell({ 6117, 22782, 22783 }, { duration = 1800, type = "BUFF", castFilter = true }) -- Mage Armor
 Spell({ 168, 7300, 7301, 7302, 7320, 10219, 10220 }, { duration = 1800, type = "BUFF", castFilter = true }) -- Frost/Ice Armor
 
