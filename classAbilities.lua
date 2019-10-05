@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 32
+local Type, Version = "SpellTable", 33
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -65,6 +65,14 @@ lib.indirectRefreshSpells = {
             ["SPELL_CAST_SUCCESS"] = true
         },
         targetSpellID = 29203, -- Healing Way
+    },
+
+    [GetSpellInfo(10)] = { -- Blizzard
+        events = {
+            ["SPELL_DAMAGE"] = true
+        },
+        applyAura = true,
+        targetSpellID = 12486, -- Imp Blizzard
     },
 
 }
@@ -751,12 +759,19 @@ Spell({ 120, 8492, 10159, 10160, 10161 }, {
 }) -- Cone of Cold
 
 -- DOESN'T APPEAR IN COMBAT LOG
--- Spell({ 12484, 12485, 12486 }, {
---     duration = function(spellID, isSrcPlayer)
---         local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
---         return 1.5 + permafrost
---     end
--- }) -- Improved Blizzard
+if class == "MAGE" then
+Spell({ 12484, 12485, 12486 }, {
+    duration = function(spellID, isSrcPlayer)
+        if Talent(11185, 12487, 12488) > 0 then -- Don't show anything if mage doesn't have imp blizzard talent
+            -- local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
+            local permafrost = Talent(11175, 12569, 12571) -- Always count player's permafost, even source isn't player.
+            return 1.5 + permafrost
+        else
+            return nil
+        end
+    end
+}) -- Improved Blizzard
+end
 
 Spell({6136, 7321}, {
     duration = function(spellID, isSrcPlayer)
