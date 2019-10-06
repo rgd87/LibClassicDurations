@@ -699,6 +699,21 @@ local function GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking)
     end
 end
 
+if playerClass == "MAGE" then
+    local NormalGetGUIDAuraTime = GetGUIDAuraTime
+    local Chilled = GetSpellInfo(12486)
+    GetGUIDAuraTime = function(dstGUID, spellName, spellID, ...)
+
+        -- Overriding spellName for Improved blizzard's spellIDs
+        if spellName == Chilled and
+            spellID == 12486 or spellID == 12484 or spellID == 12485
+        then
+            spellName = "ImpBlizzard"
+        end
+        return NormalGetGUIDAuraTime(dstGUID, spellName, spellID, ...)
+    end
+end
+
 function lib.GetAuraDurationByUnitDirect(unit, spellID, casterUnit, spellName)
     assert(spellID, "spellID is nil")
     local opts = spells[spellID]
