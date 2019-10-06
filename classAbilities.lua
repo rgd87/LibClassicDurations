@@ -69,7 +69,7 @@ lib.indirectRefreshSpells = {
 
     [GetSpellInfo(10)] = { -- Blizzard
         events = {
-            ["SPELL_DAMAGE"] = true
+            ["SPELL_PERIODIC_DAMAGE"] = true
         },
         applyAura = true,
         targetSpellID = 12486, -- Imp Blizzard
@@ -758,19 +758,24 @@ Spell({ 120, 8492, 10159, 10160, 10161 }, {
     end
 }) -- Cone of Cold
 
--- DOESN'T APPEAR IN COMBAT LOG
+
 if class == "MAGE" then
+-- Chilled from Imp Blizzard
 Spell({ 12484, 12485, 12486 }, {
     duration = function(spellID, isSrcPlayer)
         if Talent(11185, 12487, 12488) > 0 then -- Don't show anything if mage doesn't have imp blizzard talent
-            -- local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
             local permafrost = Talent(11175, 12569, 12571) -- Always count player's permafost, even source isn't player.
-            return 1.5 + permafrost
+            return 1.5 + permafrost + 0.5
+            -- 0.5 compensates for delay between damage event and slow application
         else
             return nil
         end
     end
-}) -- Improved Blizzard
+}) -- Improved Blizzard (Chilled)
+
+-- Manually setting a custom spellname for ImpBlizzard's "Chilled" aura
+lib.spellNameToID["ImpBlizzard"] = 12486
+-- Frost Armor will overwrite Chilled to 7321 right after
 end
 
 Spell({6136, 7321}, {
@@ -778,7 +783,7 @@ Spell({6136, 7321}, {
         local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
         return 5 + permafrost
     end
-}) -- Frost Armor
+}) -- Frost/Ice Armor (Chilled)
 
 Spell({ 116, 205, 837, 7322, 8406, 8407, 8408, 10179, 10180, 10181, 25304 }, {
     duration = function(spellID, isSrcPlayer)
