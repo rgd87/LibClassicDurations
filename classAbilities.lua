@@ -69,7 +69,7 @@ lib.indirectRefreshSpells = {
 
     [GetSpellInfo(10)] = { -- Blizzard
         events = {
-            ["SPELL_DAMAGE"] = true
+            ["SPELL_PERIODIC_DAMAGE"] = true
         },
         applyAura = true,
         targetSpellID = 12486, -- Imp Blizzard
@@ -758,27 +758,34 @@ Spell({ 120, 8492, 10159, 10160, 10161 }, {
     end
 }) -- Cone of Cold
 
--- DOESN'T APPEAR IN COMBAT LOG
+
 if class == "MAGE" then
-Spell({ 12484, 12485, 12486 }, {
+-- Chilled from both Frost Armor and Imp Blizzard
+Spell({ 6136, 7321,     12484, 12485, 12486 }, {
     duration = function(spellID, isSrcPlayer)
-        if Talent(11185, 12487, 12488) > 0 then -- Don't show anything if mage doesn't have imp blizzard talent
-            -- local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
-            local permafrost = Talent(11175, 12569, 12571) -- Always count player's permafost, even source isn't player.
-            return 1.5 + permafrost
+        if spellID == 6136 or spellID == 7321 then
+            local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
+            return 5 + permafrost
         else
-            return nil
+            if Talent(11185, 12487, 12488) > 0 then -- Don't show anything if mage doesn't have imp blizzard talent
+                local permafrost = Talent(11175, 12569, 12571) -- Always count player's permafost, even source isn't player.
+                return 1.5 + permafrost
+            else
+                return nil
+            end
         end
     end
-}) -- Improved Blizzard
-end
+}) -- Improved Blizzard (Chilled)
 
+else
+-- Only Chilled from Frost Armor for non-mages
 Spell({6136, 7321}, {
     duration = function(spellID, isSrcPlayer)
-        local permafrost = isSrcPlayer and Talent(11175, 12569, 12571) or 0
+        local permafrost = 0 -- isSrcPlayer and Talent(11175, 12569, 12571) or 0
         return 5 + permafrost
     end
-}) -- Frost Armor
+}) -- Frost/Ice Armor (Chilled)
+end
 
 Spell({ 116, 205, 837, 7322, 8406, 8407, 8408, 10179, 10180, 10181, 25304 }, {
     duration = function(spellID, isSrcPlayer)
