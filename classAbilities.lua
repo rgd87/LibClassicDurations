@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 33
+local Type, Version = "SpellTable", 34
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -25,7 +25,16 @@ lib.indirectRefreshSpells = {
         targetSpellID = 11597,
     },
 
-    [GetSpellInfo(10207)] = { -- Scorch
+    [GetSpellInfo(25357)] = { -- Healing Wave
+        events = {
+            ["SPELL_CAST_SUCCESS"] = true
+        },
+        targetSpellID = 29203, -- Healing Way
+    },
+}
+
+if class == "MAGE" then
+    lib.indirectRefreshSpells[GetSpellInfo(10207)] = { -- Scorch
         events = {
             ["SPELL_DAMAGE"] = true
         },
@@ -33,49 +42,43 @@ lib.indirectRefreshSpells = {
         condition = function(isMine) return isMine end,
         -- it'll refresg only from mages personal casts which is fine
         -- because if mage doesn't have imp scorch then he won't even see a Fire Vulnerability timer
-    },
+    }
 
-    -- Shadow Weaving
-    [GetSpellInfo(10894)] = { -- SW:Pain
-        events = {
-            ["SPELL_AURA_APPLIED"] = true,
-            ["SPELL_AURA_REFRESH"] = true,
-        },
-        targetSpellID = 15258, -- Shadow Weaving
-        condition = function(isMine) return isMine end,
-    },
-    [GetSpellInfo(10947)] = { -- Mind Blast
-        events = {
-            ["SPELL_DAMAGE"] = true,
-        },
-        targetSpellID = 15258, -- Shadow Weaving
-        condition = function(isMine) return isMine end,
-    },
-    [GetSpellInfo(18807)] = { -- Mind Flay
-        events = {
-            ["SPELL_AURA_APPLIED"] = true,
-            ["SPELL_AURA_REFRESH"] = true,
-        },
-        targetSpellID = 15258, -- Shadow Weaving
-        condition = function(isMine) return isMine end,
-    },
-
-    [GetSpellInfo(25357)] = { -- Healing Wave
-        events = {
-            ["SPELL_CAST_SUCCESS"] = true
-        },
-        targetSpellID = 29203, -- Healing Way
-    },
-
-    [GetSpellInfo(10)] = { -- Blizzard
+    lib.indirectRefreshSpells[GetSpellInfo(10)] = { -- Blizzard
         events = {
             ["SPELL_PERIODIC_DAMAGE"] = true
         },
         applyAura = true,
         targetSpellID = 12486, -- Imp Blizzard
-    },
+    }
+end
 
-}
+if class == "PRIEST" then
+    -- Shadow Weaving
+    lib.indirectRefreshSpells[GetSpellInfo(10894)] = { -- SW:Pain
+        events = {
+            ["SPELL_AURA_APPLIED"] = true,
+            ["SPELL_AURA_REFRESH"] = true,
+        },
+        targetSpellID = 15258, -- Shadow Weaving
+        condition = function(isMine) return isMine end,
+    }
+    lib.indirectRefreshSpells[GetSpellInfo(10947)] = { -- Mind Blast
+        events = {
+            ["SPELL_DAMAGE"] = true,
+        },
+        targetSpellID = 15258, -- Shadow Weaving
+        condition = function(isMine) return isMine end,
+    }
+    lib.indirectRefreshSpells[GetSpellInfo(18807)] = { -- Mind Flay
+        events = {
+            ["SPELL_AURA_APPLIED"] = true,
+            ["SPELL_AURA_REFRESH"] = true,
+        },
+        targetSpellID = 15258, -- Shadow Weaving
+        condition = function(isMine) return isMine end,
+    }
+end
 
 ------------------
 -- GLOBAL
