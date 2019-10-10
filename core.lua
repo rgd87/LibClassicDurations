@@ -61,7 +61,7 @@ Usage example 2:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 25
+local MAJOR, MINOR = "LibClassicDurations", 26
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -446,7 +446,8 @@ function f:UNIT_SPELLCAST_SUCCEEDED(event, unit, castID, spellID)
     lastSpellCastTime = GetTime()
 end
 
-local SunderArmorName = GetSpellInfo(11597)
+local lastResistSpellID
+local lastResistTime = 0
 ---------------------------
 -- COMBAT LOG HANDLER
 ---------------------------
@@ -468,6 +469,13 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
                 if not condition(isMine) then return end
             end
 
+            if refreshTable.targetResistCheck then
+                local now = GetTime()
+                if lastResistSpellID == targetSpellID and now - lastResistTime < 0.4 then
+                    return
+                end
+            end
+
             if refreshTable.applyAura then
                 local opts = spells[targetSpellID]
                 if opts then
@@ -478,6 +486,21 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
             else
                 RefreshTimer(srcGUID, dstGUID, targetSpellID)
             end
+        end
+    end
+
+    if  eventType == "SPELL_MISSED" and
+        bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE
+    then
+        local missType = auraType
+        if missType == "RESIST" then
+            spellID = GetLastRankSpellID(spellName)
+            if not spellID then
+                return
+            end
+
+            lastResistSpellID = spellID
+            lastResistTime = GetTime()
         end
     end
 
