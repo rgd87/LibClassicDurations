@@ -61,7 +61,7 @@ Usage example 2:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 25
+local MAJOR, MINOR = "LibClassicDurations", 26
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -421,13 +421,13 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     guidAccessTimes[dstGUID] = now
 end
 
-local function NotifyGUIDBuffChange(dstGUID)
+local function FireToUnits(event, dstGUID)
     if dstGUID == UnitGUID("target") then
-        callbacks:Fire("UNIT_BUFF", "target")
+        callbacks:Fire(event, "target")
     end
     local nameplateUnit = nameplateUnitMap[dstGUID]
     if nameplateUnit then
-        callbacks:Fire("UNIT_BUFF", nameplateUnit)
+        callbacks:Fire(event, nameplateUnit)
     end
 end
 
@@ -512,7 +512,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
                 eventType == "SPELL_AURA_APPLIED" or
                 eventType == "SPELL_AURA_APPLIED_DOSE"
             then
-                if not opts.castFilter or
+                if  not opts.castFilter or
                     (lastSpellCastName == spellName and lastSpellCastTime + 1 > GetTime()) or
                     isEnemyBuff
                 then
@@ -527,7 +527,13 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
                 -- invalidate buff cache
                 buffCacheValid[dstGUID] = nil
 
-                NotifyGUIDBuffChange(dstGUID)
+                FireToUnits("UNIT_BUFF", dstGUID)
+                if  eventType == "SPELL_AURA_REFRESH" or
+                    eventType == "SPELL_AURA_APPLIED" or
+                    eventType == "SPELL_AURA_APPLIED_DOSE"
+                then
+                    FireToUnits("UNIT_BUFF_GAINED", dstGUID, spellID)
+                end
             end
         end
     end
@@ -538,7 +544,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         guidAccessTimes[dstGUID] = nil
         local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
         if enableEnemyBuffTracking and not isDstFriendly then
-            NotifyGUIDBuffChange(dstGUID)
+            FireToUnits("UNIT_BUFF", dstGUID)
         end
         nameplateUnitMap[dstGUID] = nil
     end
