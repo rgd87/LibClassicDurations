@@ -431,6 +431,14 @@ local function NotifyGUIDBuffChange(dstGUID)
     end
 end
 
+local function GetLastRankSpellID(spellName)
+    local spellID = spellNameToID[spellName]
+    if not spellID then
+        spellID = NPCspellNameToID[spellName]
+    end
+    return spellID
+end
+
 local lastSpellCastName
 local lastSpellCastTime = 0
 function f:UNIT_SPELLCAST_SUCCEEDED(event, unit, castID, spellID)
@@ -474,17 +482,10 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
     end
 
     if auraType == "BUFF" or auraType == "DEBUFF" then
-        local isSrcPlayer = bit_band(srcFlags, COMBATLOG_OBJECT_TYPE_PLAYER) > 0
-
         if spellID == 0 then
             -- so not to rewrite the whole thing to spellnames after the combat log change
             -- just treat everything as max rank id of that spell name
-            if isSrcPlayer then
-                spellID = spellNameToID[spellName]
-            else
-                spellID = NPCspellNameToID[spellName]
-            end
-
+            spellID = GetLastRankSpellID(spellName)
             if not spellID then
                 return
             end
