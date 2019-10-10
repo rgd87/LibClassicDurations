@@ -318,9 +318,9 @@ Spell({ 5570, 24974, 24975, 24976, 24977 }, { duration = 12, stacking = true }) 
 -- WARRIOR
 -------------
 
-Spell( 21156 , { duration = INFINITY, type = "BUFF" }) -- Battle Stance Passive
-Spell( 7381 , { duration = INFINITY, type = "BUFF" }) -- Berserker Stance Passive
-Spell( 7376 , { duration = INFINITY, type = "BUFF" }) -- Def Stance Passive
+Spell( 2457 , { duration = INFINITY, type = "BUFF" }) -- Battle Stance
+Spell( 2458 , { duration = INFINITY, type = "BUFF" }) -- Berserker Stance
+Spell( 71 , { duration = INFINITY, type = "BUFF" }) -- Def Stance
 
 Spell( 12294, { duration = 10 }) -- Mortal Strike Healing Reduction
 

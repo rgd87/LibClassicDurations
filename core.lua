@@ -102,7 +102,7 @@ local spells = lib.spells
 local npc_spells = lib.npc_spells
 local indirectRefreshSpells
 
-
+local INFINITY = math.huge
 local PURGE_INTERVAL = 900
 local PURGE_THRESHOLD = 1800
 local UNKNOWN_AURA_DURATION = 3600 -- 60m
@@ -553,7 +553,8 @@ local makeBuffInfo = function(spellID, applicationTable, dstGUID, srcGUID)
     local duration = cleanDuration(durationFunc, spellID, srcGUID, comboPoints) -- srcGUID isn't needed actually
     -- no DRs on buffs
     local expirationTime = startTime + duration
-    if duration == 0 then
+    if duration == INFINITY then
+        duration = 0
         expirationTime = 0
     end
     local now = GetTime()
