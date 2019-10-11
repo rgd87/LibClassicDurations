@@ -61,7 +61,7 @@ Usage example 2:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 26
+local MAJOR, MINOR = "LibClassicDurations", 28
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
