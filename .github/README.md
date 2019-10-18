@@ -42,7 +42,37 @@ Usage example 2:
         end
     end)
 
+Usage example 3:
+-----------------
 
+    -- Use library's UnitAura replacement function, that shows enemy buffs and
+    -- automatically tries to add duration to everything else
+
+    local LCD = LibStub("LibClassicDurations")
+    LCD:Register("YourAddon") -- tell library it's being used and should start working
+
+    local f = CreateFrame("frame", nil, UIParent)
+    f:RegisterUnitEvent("UNIT_AURA", "target")
+
+    local EventHandler = function(self, event, unit)
+        for i=1,100 do
+            local name, _, _, _, duration, expirationTime, _, _, _, spellId = LCD:UnitAura(unit, i, "HELPFUL")
+            if not name then break end
+            print(name, duration, expirationTime)
+        end
+    end
+
+    f:SetScript("OnEvent", EventHandler)
+
+    -- NOTE: Enemy buff tracking won't start until you register UNIT_BUFF
+    LCD.RegisterCallback(addon, "UNIT_BUFF", function(event, unit)
+        EventHandler(f, "UNIT_AURA", unit)
+    end)
+
+    -- Optional:
+    LCD.RegisterCallback(addon, "UNIT_BUFF_GAINED", function(event, unit, spellID)
+        print("Gained", GetSpellInfo(spellID))
+    end)
 
 
 Embedding in .pkgmeta

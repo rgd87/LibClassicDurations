@@ -39,7 +39,6 @@ Usage example 2:
     local LCD = LibStub("LibClassicDurations")
     LCD:Register("YourAddon") -- tell library it's being used and should start working
 
-
     local f = CreateFrame("frame", nil, UIParent)
     f:RegisterUnitEvent("UNIT_AURA", "target")
 
@@ -55,6 +54,11 @@ Usage example 2:
 
     -- NOTE: Enemy buff tracking won't start until you register UNIT_BUFF
     LCD.RegisterCallback(addon, "UNIT_BUFF", function(event, unit)
+        EventHandler(f, "UNIT_AURA", unit)
+    end)
+
+    -- Optional:
+    LCD.RegisterCallback(addon, "UNIT_BUFF_GAINED", function(event, unit, spellID)
         EventHandler(f, "UNIT_AURA", unit)
     end)
 
@@ -663,6 +667,7 @@ function lib.UnitAuraDirect(unit, index, filter)
         return FillInDuration(unit, UnitAura(unit, index, filter))
     end
 end
+lib.UnitAuraWithBuffs = lib.UnitAuraDirect
 
 function lib.UnitAuraWrapper(unit, ...)
     return FillInDuration(unit, UnitAura(unit, ...))
