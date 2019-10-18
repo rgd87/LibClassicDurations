@@ -566,15 +566,35 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         end
     end
     if eventType == "UNIT_DIED" then
-        guids[dstGUID] = nil
-        buffCache[dstGUID] = nil
-        buffCacheValid[dstGUID] = nil
-        guidAccessTimes[dstGUID] = nil
-        local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
-        if enableEnemyBuffTracking and not isDstFriendly then
-            FireToUnits("UNIT_BUFF", dstGUID)
+        local _, englishClass, _, _, _, _, playerName = GetPlayerInfoByGUID(dstGUID)
+        local isFeign = false
+        if englishClass == "HUNTER" then
+            if GetNumGroupMembers() < 6 then
+                for i = 1, MAX_PARTY_MEMBERS do
+                    local unitID = "party"..i
+                    if (UnitName(unitID) == playerName) and (UnitIsFeignDeath(unitID) or (UnitAura("player", "Feign Death") ~= nil)) then
+                        isFeign = true
+                    end
+                end
+            else
+                for i = 1, MAX_RAID_MEMBERS do
+                    local unitID = "raid"..i
+                    if (UnitName(unitID) == playerName) and (UnitIsFeignDeath(unitID) or (UnitAura("player", "Feign Death") ~= nil)) then
+                        isFeign = true
+                    end
+                end
+            end
+        elseif isFeign == false then
+            guids[dstGUID] = nil
+            buffCache[dstGUID] = nil
+            buffCacheValid[dstGUID] = nil
+            guidAccessTimes[dstGUID] = nil
+            local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
+            if enableEnemyBuffTracking and not isDstFriendly then
+                FireToUnits("UNIT_BUFF", dstGUID)
+            end
+            nameplateUnitMap[dstGUID] = nil
         end
-        nameplateUnitMap[dstGUID] = nil
     end
 end
 
