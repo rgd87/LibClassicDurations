@@ -59,7 +59,7 @@ Usage example 2:
 
     -- Optional:
     LCD.RegisterCallback(addon, "UNIT_BUFF_GAINED", function(event, unit, spellID)
-        EventHandler(f, "UNIT_AURA", unit)
+        print("Gained", GetSpellInfo(spellID))
     end)
 
 --]================]
@@ -824,6 +824,31 @@ function lib:ToggleDebug()
             spellID, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
             local isSrcPlayer = (bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE)
             if isSrcPlayer then
+                print (GetTime(), "ID:", spellID, spellName, eventType, srcFlags, srcGUID,"|cff00ff00==>|r", dstGUID, dstFlags, auraType, amount)
+            end
+        end)
+    end
+    if not lib.debug.enabled then
+        lib.debug:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+        lib.debug.enabled = true
+        print("[LCD] Enabled combat log event display")
+    else
+        lib.debug:UnregisterAllEvents()
+        lib.debug.enabled = false
+        print("[LCD] Disabled combat log event display")
+    end
+end
+
+function lib:MonitorUnit(unit)
+    if not lib.debug then
+        lib.debug = CreateFrame("Frame")
+        local debugGUID = UnitGUID(unit)
+        lib.debug:SetScript("OnEvent",function( self, event )
+            local timestamp, eventType, hideCaster,
+            srcGUID, srcName, srcFlags, srcFlags2,
+            dstGUID, dstName, dstFlags, dstFlags2,
+            spellID, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
+            if srcGUID == debugGUID or dstGUID == debugGUID then
                 print (GetTime(), "ID:", spellID, spellName, eventType, srcFlags, srcGUID,"|cff00ff00==>|r", dstGUID, dstFlags, auraType, amount)
             end
         end)
