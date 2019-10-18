@@ -99,6 +99,9 @@ local nameplateUnitMap = lib.nameplateUnitMap
 lib.guidAccessTimes = lib.guidAccessTimes or {}
 local guidAccessTimes = lib.guidAccessTimes
 
+lib.hunterGUIDs = lib.hunterGUIDs or {}
+local hunterGUIDS = lib.hunterGUIDs
+
 local f = lib.frame
 local callbacks = lib.callbacks
 local guids = lib.guids
@@ -204,6 +207,7 @@ local function purgeOldGUIDs()
             buffCacheValid[guid] = nil
             buffCache[guid] = nil
             DRInfo[guid] = nil
+            hunterGUIDS[guid] = nil
             tinsert(deleted, guid)
         end
     end
@@ -284,7 +288,9 @@ local function CountDiminishingReturns(eventType, srcGUID, srcFlags, dstGUID, ds
             addDRLevel(dstGUID, category)
         end
         if eventType == "UNIT_DIED" then
-            clearDRs(dstGUID)
+            if not hunterGUIDS[dstGUID] then
+                clearDRs(dstGUID)
+            end
         end
     end
 end
@@ -303,7 +309,15 @@ local function GetCP()
 end
 
 function f:PLAYER_TARGET_CHANGED(event)
-    return self:UNIT_POWER_UPDATE(event, "player", "COMBO_POINTS")
+    if select(2, UnitClass("target")) == "HUNTER" then
+        local guid = UnitGUID("target")
+        hunterGUIDS[guid] = true
+        guidAccessTimes[guid] = GetTime()
+    end
+
+    if playerClass == "ROGUE" then
+        self:UNIT_POWER_UPDATE(event, "player", "COMBO_POINTS")
+    end
 end
 function f:UNIT_POWER_UPDATE(event,unit, ptype)
     if ptype == "COMBO_POINTS" then
@@ -566,15 +580,17 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         end
     end
     if eventType == "UNIT_DIED" then
-        guids[dstGUID] = nil
-        buffCache[dstGUID] = nil
-        buffCacheValid[dstGUID] = nil
-        guidAccessTimes[dstGUID] = nil
-        local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
-        if enableEnemyBuffTracking and not isDstFriendly then
-            FireToUnits("UNIT_BUFF", dstGUID)
+        if not hunterGUIDS[dstGUID] then
+            guids[dstGUID] = nil
+            buffCache[dstGUID] = nil
+            buffCacheValid[dstGUID] = nil
+            guidAccessTimes[dstGUID] = nil
+            local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
+            if enableEnemyBuffTracking and not isDstFriendly then
+                FireToUnits("UNIT_BUFF", dstGUID)
+            end
+            nameplateUnitMap[dstGUID] = nil
         end
-        nameplateUnitMap[dstGUID] = nil
     end
 end
 
@@ -792,8 +808,8 @@ function lib:RegisterFrame(frame)
     if next(activeFrames) then
         f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
         f:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+        f:RegisterEvent("PLAYER_TARGET_CHANGED")
         if playerClass == "ROGUE" then
-            f:RegisterEvent("PLAYER_TARGET_CHANGED")
             f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
         end
     end
@@ -805,8 +821,8 @@ function lib:UnregisterFrame(frame)
     if not next(activeFrames) then
         f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
         f:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+        f:UnregisterEvent("PLAYER_TARGET_CHANGED")
         if playerClass == "ROGUE" then
-            f:UnregisterEvent("PLAYER_TARGET_CHANGED")
             f:UnregisterEvent("UNIT_POWER_UPDATE")
         end
     end
