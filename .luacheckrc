@@ -26,6 +26,8 @@ globals = {
 
 	"WOW_PROJECT_CLASSIC",
 	"WOW_PROJECT_ID",
+	"MAX_PARTY_MEMBERS",
+	"MAX_RAID_MEMBERS",
 	-- misc custom
 	"LibStub",
 	-- FrameXML misc

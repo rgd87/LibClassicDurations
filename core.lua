@@ -65,7 +65,7 @@ Usage example 2:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 29
+local MAJOR, MINOR = "LibClassicDurations", 30
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -190,6 +190,28 @@ local function processNPCSpellTable()
     end
 end
 lib.NPCSpellTableTimer = C_Timer.NewTimer(10, processNPCSpellTable)
+
+
+local function isHunterGUID(guid)
+    return select(2, GetPlayerInfoByGUID(guid)) == "HUNTER"
+end
+local function isFriendlyFeigning(guid)
+    if IsInRaid() then
+        for i = 1, MAX_RAID_MEMBERS do
+            local unitID = "raid"..i
+            if (UnitGUID(unitID) == guid) and UnitIsFeignDeath(unitID) then
+                return true
+            end
+        end
+    elseif IsInGroup() then
+        for i = 1, MAX_PARTY_MEMBERS do
+            local unitID = "party"..i
+            if (UnitGUID(unitID) == guid) and UnitIsFeignDeath(unitID) then
+                return true
+            end
+        end
+    end
+end
 --------------------------
 -- OLD GUIDs PURGE
 --------------------------
@@ -284,7 +306,9 @@ local function CountDiminishingReturns(eventType, srcGUID, srcFlags, dstGUID, ds
             addDRLevel(dstGUID, category)
         end
         if eventType == "UNIT_DIED" then
-            clearDRs(dstGUID)
+            if not isHunterGUID(dstGUID) then
+                clearDRs(dstGUID)
+            end
         end
     end
 end
@@ -566,6 +590,13 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         end
     end
     if eventType == "UNIT_DIED" then
+        if isHunterGUID(dstGUID) then
+            local isDstFriendly = bit_band(dstFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0
+            if not isDstFriendly or isFriendlyFeigning(dstGUID) then
+                return
+            end
+        end
+
         guids[dstGUID] = nil
         buffCache[dstGUID] = nil
         buffCacheValid[dstGUID] = nil
