@@ -65,7 +65,7 @@ Usage example 2:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 30
+local MAJOR, MINOR = "LibClassicDurations", 31
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -467,13 +467,6 @@ local function GetLastRankSpellID(spellName)
     return spellID
 end
 
-local lastSpellCastName
-local lastSpellCastTime = 0
-function f:UNIT_SPELLCAST_SUCCEEDED(event, unit, castID, spellID)
-    lastSpellCastName = GetSpellInfo(spellID)
-    lastSpellCastTime = GetTime()
-end
-
 local lastResistSpellID
 local lastResistTime = 0
 ---------------------------
@@ -532,7 +525,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         end
     end
 
-    if auraType == "BUFF" or auraType == "DEBUFF" then
+    if auraType == "BUFF" or auraType == "DEBUFF" or eventType == "SPELL_CAST_SUCCESS" then
         if spellID == 0 then
             -- so not to rewrite the whole thing to spellnames after the combat log change
             -- just treat everything as max rank id of that spell name
@@ -558,6 +551,15 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
         end
 
         if opts then
+            local castEventPass
+            if eventType == "SPELL_CAST_SUCCESS" and opts.castFilter then
+                -- For spells that have cast filter enabled, transform their CAST event into AURA_APPLIED
+                -- And give them a pass, while their normal AURA_APPLIED events get rejected without it
+                eventType = "SPELL_AURA_APPLIED"
+                auraType = opts.type == "BUFF" and "BUFF" or "DEBUFF"
+                castEventPass = true
+            end
+
             local isEnemyBuff = not isDstFriendly and auraType == "BUFF"
             -- print(eventType, srcGUID, "=>", dstName, spellID, spellName, auraType )
             if  eventType == "SPELL_AURA_REFRESH" or
@@ -565,7 +567,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
                 eventType == "SPELL_AURA_APPLIED_DOSE"
             then
                 if  not opts.castFilter or
-                    (lastSpellCastName == spellName and lastSpellCastTime + 1 > GetTime()) or
+                    castEventPass or
                     isEnemyBuff
                 then
                     SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType)
@@ -822,7 +824,6 @@ function lib:RegisterFrame(frame)
     activeFrames[frame] = true
     if next(activeFrames) then
         f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-        f:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
         if playerClass == "ROGUE" then
             f:RegisterEvent("PLAYER_TARGET_CHANGED")
             f:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
@@ -835,7 +836,6 @@ function lib:UnregisterFrame(frame)
     activeFrames[frame] = nil
     if not next(activeFrames) then
         f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-        f:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
         if playerClass == "ROGUE" then
             f:UnregisterEvent("PLAYER_TARGET_CHANGED")
             f:UnregisterEvent("UNIT_POWER_UPDATE")
