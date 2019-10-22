@@ -65,7 +65,7 @@ Usage example 2:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 33
+local MAJOR, MINOR = "LibClassicDurations", 34
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -107,7 +107,7 @@ local callbacks = lib.callbacks
 local guids = lib.guids
 local spells = lib.spells
 local npc_spells = lib.npc_spells
-local indirectRefreshSpells
+local indirectRefreshSpells = lib.indirectRefreshSpells
 
 local INFINITY = math.huge
 local PURGE_INTERVAL = 900
