@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 42
+local Type, Version = "SpellTable", 43
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -47,6 +47,24 @@ if class == "MAGE" then
     }
 
     lib.indirectRefreshSpells[GetSpellInfo(25304)] = { -- Frostbolt
+        events = {
+            ["SPELL_DAMAGE"] = true
+        },
+        targetSpellID = 12579, -- Winter's Chill
+        targetResistCheck = true,
+        condition = function(isMine) return isMine end,
+    }
+
+    lib.indirectRefreshSpells[GetSpellInfo(10161)] = { -- Cone of Cold
+        events = {
+            ["SPELL_DAMAGE"] = true
+        },
+        targetSpellID = 12579, -- Winter's Chill
+        targetResistCheck = true,
+        condition = function(isMine) return isMine end,
+    }
+
+    lib.indirectRefreshSpells[GetSpellInfo(10230)] = { -- Frost Nova
         events = {
             ["SPELL_DAMAGE"] = true
         },
