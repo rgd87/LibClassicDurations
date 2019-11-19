@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 36
+local MAJOR, MINOR = "LibClassicDurations", 37
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -734,6 +734,10 @@ function callbacks.OnUnused()
     enableEnemyBuffTracking = lib.enableEnemyBuffTracking
     f:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
     f:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
+end
+
+if next(callbacks.events) then
+    callbacks.OnUsed()
 end
 
 ---------------------------
