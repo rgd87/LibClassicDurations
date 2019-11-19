@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 43
+local Type, Version = "SpellTable", 44
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -116,6 +116,7 @@ end
 -- GLOBAL
 ------------------
 
+Spell( 2479, { duration = 30 }) -- Honorless Target
 Spell(1604, { duration = 4 }) -- Common Daze
 Spell( 23605, { duration = 5 }) -- Nightfall (Axe) Proc
 Spell( 835, { duration = 3 }) -- Tidal Charm
