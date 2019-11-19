@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 35
+local MAJOR, MINOR = "LibClassicDurations", 36
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -76,7 +76,10 @@ local GetTime = GetTime
 local tinsert = table.insert
 local unpack = unpack
 local GetAuraDurationByUnitDirect
-local enableEnemyBuffTracking = false
+
+if lib.enableEnemyBuffTracking == nil then lib.enableEnemyBuffTracking = false end
+local enableEnemyBuffTracking = lib.enableEnemyBuffTracking
+
 local COMBATLOG_OBJECT_CONTROL_PLAYER = COMBATLOG_OBJECT_CONTROL_PLAYER
 
 f:SetScript("OnEvent", function(self, event, ...)
@@ -721,12 +724,14 @@ function f:NAME_PLATE_UNIT_REMOVED(event, unit)
 end
 
 function callbacks.OnUsed()
-    enableEnemyBuffTracking = true
+    lib.enableEnemyBuffTracking = true
+    enableEnemyBuffTracking = lib.enableEnemyBuffTracking
     f:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     f:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 end
 function callbacks.OnUnused()
-    enableEnemyBuffTracking = false
+    lib.enableEnemyBuffTracking = false
+    enableEnemyBuffTracking = lib.enableEnemyBuffTracking
     f:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
     f:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
 end
