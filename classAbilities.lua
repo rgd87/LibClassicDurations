@@ -158,6 +158,7 @@ Spell( 12733, { duration = 30, type = "BUFF" }) -- Blacksmith trinket
 -- Spell( 15752, { duration = 10 }) -- Linken's Boomerang disarm
 Spell( 14530, { duration = 10, type = "BUFF" }) -- Nifty Stopwatch
 Spell( 13237, { duration = 3 }) -- Goblin Mortar trinket
+Spell( 21152, { duration = 3 }) -- Earthshaker, weapon proc
 Spell( 14253, { duration = 8, type = "BUFF" }) -- Black Husk Shield
 Spell( 9175, { duration = 15, type = "BUFF" }) -- Swift Boots
 Spell( 13141, { duration = 20, type = "BUFF" }) -- Gnomish Rocket Boots
