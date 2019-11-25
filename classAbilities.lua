@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 46
+local Type, Version = "SpellTable", 47
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -522,7 +522,9 @@ Spell({ 17767, 17850, 17851, 17852, 17853, 17854 }, { duration = 10 }) -- Consum
 Spell( 18118, { duration = 5 }) -- Aftermath Proc
 Spell({ 132, 2970, 11743 }, { duration = 600 }) -- Detect Invisibility
 Spell( 5697, { duration = 600 }) -- Unending Breath
-Spell({ 17794, 17798, 17797, 17799, 17800 }, { duration = 12 }) -- Shadow Vulnerability (Imp Shadow Bolt)
+if class == "WARLOCK" then
+    Spell({ 17794, 17798, 17797, 17799, 17800 }, { duration = 12 }) -- Shadow Vulnerability (Imp Shadow Bolt)
+end
 Spell({ 18288 }, { duration = 1800, type = "BUFF" })  -- Amplify Curse
 Spell({ 1714, 11719 }, { duration = 30 }) -- Curse of Tongues
 Spell({ 702, 1108, 6205, 7646, 11707, 11708 },{ duration = 120 }) -- Curse of Weakness
