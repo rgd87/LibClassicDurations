@@ -121,6 +121,7 @@ Spell(1604, { duration = 4 }) -- Common Daze
 Spell( 23605, { duration = 5 }) -- Nightfall (Axe) Proc
 Spell( 835, { duration = 3 }) -- Tidal Charm
 Spell( 11196, { duration = 60 }) -- Recently Bandaged
+Spell( 16928, { duration = 45 }) -- Armor Shatter, procced by Annihilator, axe weapon
 
 Spell({ 13099, 13138, 16566 }, {
     duration = function(spellID)
@@ -377,6 +378,7 @@ Spell({ 772, 6546, 6547, 6548, 11572, 11573, 11574 }, { stacking = true,
     end
 }) -- Rend
 Spell( 12721, { duration = 12, stacking = true }) -- Deep Wounds
+Spell( 21553, { duration = 10 }) -- Mortal Strike
 
 Spell({ 1715, 7372, 7373 }, { duration = 15 }) -- Hamstring
 Spell( 23694 , { duration = 5 }) -- Improved Hamstring
