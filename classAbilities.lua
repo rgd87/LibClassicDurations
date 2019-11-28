@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 47
+local Type, Version = "SpellTable", 48
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -358,7 +358,7 @@ Spell( 2457 , { duration = INFINITY, type = "BUFF" }) -- Battle Stance
 Spell( 2458 , { duration = INFINITY, type = "BUFF" }) -- Berserker Stance
 Spell( 71 , { duration = INFINITY, type = "BUFF" }) -- Def Stance
 
-Spell( 12294, { duration = 10 }) -- Mortal Strike Healing Reduction
+Spell({ 12294, 21551, 21552, 21553 }, { duration = 10 }) -- Mortal Strike Healing Reduction
 
 Spell({72, 1671, 1672}, { duration = 6 }) -- Shield Bash
 Spell( 18498, { duration = 3 }) -- Improved Shield Bash
@@ -378,7 +378,6 @@ Spell({ 772, 6546, 6547, 6548, 11572, 11573, 11574 }, { stacking = true,
     end
 }) -- Rend
 Spell( 12721, { duration = 12, stacking = true }) -- Deep Wounds
-Spell( 21553, { duration = 10 }) -- Mortal Strike
 
 Spell({ 1715, 7372, 7373 }, { duration = 15 }) -- Hamstring
 Spell( 23694 , { duration = 5 }) -- Improved Hamstring
