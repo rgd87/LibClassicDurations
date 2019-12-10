@@ -776,6 +776,7 @@ local function GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking,
             local duration = forcedNPCDuration or cleanDuration(durationFunc, spellID, srcGUID, comboPoints)
             if duration == INFINITY then return nil end
             if not duration then return nil end
+            if not startTime then return nil end
             local mul = getDRMul(dstGUID, spellID)
             -- local mul = getDRMul(dstGUID, lastRankID)
             duration = duration * mul
