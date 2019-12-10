@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 40
+local MAJOR, MINOR = "LibClassicDurations", 41
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -757,6 +757,11 @@ local function GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking,
         local spellTable = guidTable[lastRankID]
         if spellTable then
             local applicationTable
+
+            -- Return when player spell and npc spell have the same name and the player spell is stacking
+            -- NPC spells are always assumed to not stack, so it won't find startTime
+            if forcedNPCDuration and spellTable.applications then return nil end
+
             if isStacking then
                 if srcGUID and spellTable.applications then
                     applicationTable = spellTable.applications[srcGUID]
