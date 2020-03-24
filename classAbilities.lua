@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 51
+local Type, Version = "SpellTable", 52
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -24,6 +24,7 @@ lib.indirectRefreshSpells = {
             ["SPELL_CAST_SUCCESS"] = true
         },
         targetSpellID = 11597,
+        rollbackMisses = true,
     },
 
     [GetSpellInfo(25357)] = { -- Healing Wave
