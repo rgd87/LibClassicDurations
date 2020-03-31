@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 52
+local Type, Version = "SpellTable", 53
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -41,7 +41,7 @@ if class == "MAGE" then
             ["SPELL_DAMAGE"] = true
         },
         targetSpellID = 22959, -- Fire Vulnerability
-        targetResistCheck = true,
+        rollbackMisses = true,
         condition = function(isMine) return isMine end,
         -- it'll refresg only from mages personal casts which is fine
         -- because if mage doesn't have imp scorch then he won't even see a Fire Vulnerability timer
@@ -52,7 +52,7 @@ if class == "MAGE" then
             ["SPELL_DAMAGE"] = true
         },
         targetSpellID = 12579, -- Winter's Chill
-        targetResistCheck = true,
+        rollbackMisses = true,
         condition = function(isMine) return isMine end,
     }
 
@@ -61,7 +61,7 @@ if class == "MAGE" then
             ["SPELL_DAMAGE"] = true
         },
         targetSpellID = 12579, -- Winter's Chill
-        targetResistCheck = true,
+        rollbackMisses = true,
         condition = function(isMine) return isMine end,
     }
 
@@ -70,7 +70,7 @@ if class == "MAGE" then
             ["SPELL_DAMAGE"] = true
         },
         targetSpellID = 12579, -- Winter's Chill
-        targetResistCheck = true,
+        rollbackMisses = true,
         condition = function(isMine) return isMine end,
     }
 
@@ -91,7 +91,8 @@ if class == "PRIEST" then
             ["SPELL_AURA_REFRESH"] = true,
         },
         targetSpellID = 15258, -- Shadow Weaving
-        targetResistCheck = true,
+        -- targetResistCheck = true,
+        rollbackMisses = true,
         condition = function(isMine) return isMine end,
     }
     lib.indirectRefreshSpells[GetSpellInfo(10947)] = { -- Mind Blast
@@ -99,7 +100,8 @@ if class == "PRIEST" then
             ["SPELL_DAMAGE"] = true,
         },
         targetSpellID = 15258, -- Shadow Weaving
-        targetResistCheck = true,
+        -- targetResistCheck = true,
+        rollbackMisses = true,
         condition = function(isMine) return isMine end,
     }
     lib.indirectRefreshSpells[GetSpellInfo(18807)] = { -- Mind Flay
@@ -108,7 +110,8 @@ if class == "PRIEST" then
             ["SPELL_AURA_REFRESH"] = true,
         },
         targetSpellID = 15258, -- Shadow Weaving
-        targetResistCheck = true,
+        -- targetResistCheck = true,
+        rollbackMisses = true,
         condition = function(isMine) return isMine end,
     }
 end
