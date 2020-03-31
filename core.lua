@@ -873,7 +873,8 @@ function lib:GetDurationForRank(spellName, spellID, srcGUID)
     end
 end
 
-local activeFrames = {}
+lib.activeFrames = lib.activeFrames or {}
+local activeFrames = lib.activeFrames
 function lib:RegisterFrame(frame)
     activeFrames[frame] = true
     if next(activeFrames) then
