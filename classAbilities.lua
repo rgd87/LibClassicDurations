@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 53
+local Type, Version = "SpellTable", 54
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -74,6 +74,9 @@ if class == "MAGE" then
         condition = function(isMine) return isMine end,
     }
 
+    -- Winter's Chill = Frostbolt
+    lib.indirectRefreshSpells[GetSpellInfo(12579)] = lib.indirectRefreshSpells[GetSpellInfo(25304)]
+
     lib.indirectRefreshSpells[GetSpellInfo(10)] = { -- Blizzard
         events = {
             ["SPELL_PERIODIC_DAMAGE"] = true
@@ -114,6 +117,10 @@ if class == "PRIEST" then
         rollbackMisses = true,
         condition = function(isMine) return isMine end,
     }
+
+    -- Shadow Weaving = SW: Pain
+    lib.indirectRefreshSpells[GetSpellInfo(15258)] = CopyTable(lib.indirectRefreshSpells[GetSpellInfo(10894)])
+    lib.indirectRefreshSpells[GetSpellInfo(15258)].events = {}
 end
 
 ------------------
