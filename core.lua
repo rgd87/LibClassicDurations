@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 51
+local MAJOR, MINOR = "LibClassicDurations", 52
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -483,8 +483,9 @@ local function ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstG
 
                 if refreshTable.rollbackMisses and oldStartTime then
                     rollbackTable[srcGUID] = rollbackTable[srcGUID] or {}
+                    rollbackTable[srcGUID][dstGUID] = rollbackTable[srcGUID][dstGUID] or {}
                     local now = GetTime()
-                    rollbackTable[srcGUID][targetSpellID] = {now, dstGUID, oldStartTime}
+                    rollbackTable[srcGUID][dstGUID][targetSpellID] = {now, oldStartTime}
                 end
             end
         end
@@ -509,15 +510,18 @@ function f:CombatLogHandler(...)
             local refreshTable = indirectRefreshSpells[spellName]
             -- This is just for Sunder Armor misses
             if refreshTable and refreshTable.rollbackMisses then
-                local rollbacks = rollbackTable[srcGUID]
-                if rollbacks then
-                    local targetSpellID = refreshTable.targetSpellID
-                    local snapshot = rollbacks[targetSpellID]
-                    if snapshot then
-                        local timestamp, oldDstGUID, oldStartTime = unpack(snapshot)
-                        local now = GetTime()
-                        if now - timestamp < 0.3 then
-                            RefreshTimer(srcGUID, dstGUID, targetSpellID, oldStartTime)
+                local rollbacksFromSource = rollbackTable[srcGUID]
+                if rollbacksFromSource then
+                    local rollbacks = rollbacksFromSource[dstGUID]
+                    if rollbacks then
+                        local targetSpellID = refreshTable.targetSpellID
+                        local snapshot = rollbacks[targetSpellID]
+                        if snapshot then
+                            local timestamp, oldStartTime = unpack(snapshot)
+                            local now = GetTime()
+                            if now - timestamp < 0.5 then
+                                RefreshTimer(srcGUID, dstGUID, targetSpellID, oldStartTime)
+                            end
                         end
                     end
                 end
