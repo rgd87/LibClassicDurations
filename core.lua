@@ -677,7 +677,7 @@ local shouldDisplayAura = function(auraTable)
     return false
 end
 
-scanTip = CreateFrame("GameTooltip", "LibClassicDurationsScanTip", nil, "GameTooltipTemplate")
+local scanTip = CreateFrame("GameTooltip", "LibClassicDurationsScanTip", nil, "GameTooltipTemplate")
 scanTip:SetOwner(WorldFrame, "ANCHOR_NONE")
 local function RegenerateBuffList(unit, dstGUID)
     local guidTable = guids[dstGUID]
@@ -706,10 +706,11 @@ local function RegenerateBuffList(unit, dstGUID)
     end
 
     local finalBuffs = {}
+    local spellName
     for i=1, 32 do
         scanTip:ClearLines()
         scanTip:SetUnitAura(unit, i, "HELPFUL")
-        local spellName = LibClassicDurationsScanTipTextLeft1:GetText()
+        spellName = LibClassicDurationsScanTipTextLeft1:GetText()
         if spellName then
             local found
             for id,buffinfo in pairs(buffs) do
@@ -729,7 +730,15 @@ local function RegenerateBuffList(unit, dstGUID)
         end
     end
 
-    buffCache[dstGUID] = finalBuffs
+-- This should keep compatibility if blizzard fixes SetUnitAura
+    scanTip:ClearLines()
+    scanTip:SetUnitAura(unit, 1, "HELPFUL")
+    spellName = LibClassicDurationsScanTipTextLeft1:GetText()
+    if not spellName then
+        buffCache[dstGUID] = buffs
+    else
+        buffCache[dstGUID] = finalBuffs
+    end
     buffCacheValid[dstGUID] = GetTime() + BUFF_CACHE_EXPIRATION_TIME -- Expiration timestamp
 end
 
