@@ -695,18 +695,20 @@ local function RegenerateBuffList(unit, dstGUID)
         spellName = LibClassicDurationsScanTipTextLeft1:GetText()
         if spellName then
             local spellID = spellNameToID[spellName] or NPCspellNameToID[spellName]
-            local icon = select(3,GetSpellInfo(spellID)) or 136235
-            local opts = spells[spellID]
-            local buffInfo = { spellName, icon, 0, (opts and opts.buffType), 0, 0, nil, nil, nil, spellID, false, false, false, false, 1 }
+            if spellID then
+                local icon = select(3,GetSpellInfo(spellID)) or 136235
+                local opts = spells[spellID]
+                local buffInfo = { spellName, icon, 0, (opts and opts.buffType), 0, 0, nil, nil, nil, spellID, false, false, false, false, 1 }
 
-            local srcGUID = nil
-            local duration, expirationTime = GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, opts.stacking)
-            if duration then
-                buffInfo[5] = duration
-                buffInfo[6] = expirationTime
+                local srcGUID = nil
+                local duration, expirationTime = GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, opts.stacking)
+                if duration then
+                    buffInfo[5] = duration
+                    buffInfo[6] = expirationTime
+                end
+
+                tinsert(buffs, buffInfo)
             end
-
-            tinsert(buffs, buffInfo)
         else
             break
         end
