@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 54
+local MAJOR, MINOR = "LibClassicDurations", 55
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -699,9 +699,9 @@ local function RegenerateBuffList(unit, dstGUID)
                 local icon = select(3,GetSpellInfo(spellID)) or 136235
                 local opts = spells[spellID]
                 local buffInfo = { spellName, icon, 0, (opts and opts.buffType), 0, 0, nil, nil, nil, spellID, false, false, false, false, 1 }
-
+                local isStacking = opts and opts.stacking
                 local srcGUID = nil
-                local duration, expirationTime = GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, opts.stacking)
+                local duration, expirationTime = GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking)
                 if duration then
                     buffInfo[5] = duration
                     buffInfo[6] = expirationTime
