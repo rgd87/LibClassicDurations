@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 53
+local MAJOR, MINOR = "LibClassicDurations", 54
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -76,6 +76,7 @@ local GetTime = GetTime
 local tinsert = table.insert
 local unpack = unpack
 local GetAuraDurationByUnitDirect
+local GetGUIDAuraTime
 
 if lib.enableEnemyBuffTracking == nil then lib.enableEnemyBuffTracking = false end
 local enableEnemyBuffTracking = lib.enableEnemyBuffTracking
@@ -677,68 +678,41 @@ local shouldDisplayAura = function(auraTable)
     return false
 end
 
-local scanTip = CreateFrame("GameTooltip", "LibClassicDurationsScanTip", nil, "GameTooltipTemplate")
+lib.scanTip = lib.scanTip or CreateFrame("GameTooltip", "LibClassicDurationsScanTip", nil, "GameTooltipTemplate")
+local scanTip = lib.scanTip
 scanTip:SetOwner(WorldFrame, "ANCHOR_NONE")
 local function RegenerateBuffList(unit, dstGUID)
     local guidTable = guids[dstGUID]
-
-    local buffs = {}
-    if guidTable then
-        for spellID, t in pairs(guidTable) do
-            if t.applications then
-                for srcGUID, auraTable in pairs(t.applications) do
-                    if auraTable[3] == "BUFF" then
-                        local buffInfo = makeBuffInfo(spellID, auraTable, dstGUID, srcGUID)
-                        if buffInfo then
-                            tinsert(buffs, buffInfo)
-                        end
-                    end
-                end
-            else
-               if t[3] == "BUFF" then
-                    local buffInfo = makeBuffInfo(spellID, t, dstGUID)
-                    if buffInfo then
-                        tinsert(buffs, buffInfo)
-                    end
-                end
-            end
-        end
+    if not guidTable then
+        return
     end
 
-    local finalBuffs = {}
+    local buffs = {}
     local spellName
     for i=1, 32 do
         scanTip:ClearLines()
         scanTip:SetUnitAura(unit, i, "HELPFUL")
         spellName = LibClassicDurationsScanTipTextLeft1:GetText()
         if spellName then
-            local found
-            for id,buffinfo in pairs(buffs) do
-                if spellName == buffinfo[1] then
-                    found = true
-                    tinsert(finalBuffs, buffinfo)
-                    break
-                end
+            local spellID = spellNameToID[spellName] or NPCspellNameToID[spellName]
+            local icon = select(3,GetSpellInfo(spellID)) or 136235
+            local opts = spells[spellID]
+            local buffInfo = { spellName, icon, 0, (opts and opts.buffType), 0, 0, nil, nil, nil, spellID, false, false, false, false, 1 }
+
+            local srcGUID = nil
+            local duration, expirationTime = GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, opts.stacking)
+            if duration then
+                buffInfo[5] = duration
+                buffInfo[6] = expirationTime
             end
-            if not found then
-                local spellID = spellNameToID[spellName] or NPCspellNameToID[spellName]
-                local icon = select(3,GetSpellInfo(spellID)) or 136235
-                tinsert(finalBuffs, { spellName, icon, 0, (spells[spellID] and spells[spellID].buffType), 0, 0, nil, nil, nil, spellID, false, false, false, false, 1 })
-            end
+
+            tinsert(buffs, buffInfo)
         else
             break
         end
     end
 
--- This should keep compatibility if blizzard fixes SetUnitAura
-    scanTip:ClearLines()
-    scanTip:SetUnitAura(unit, 1, "HELPFUL")
-    spellName = LibClassicDurationsScanTipTextLeft1:GetText()
-    if not spellName then
-        buffCache[dstGUID] = buffs
-    else
-        buffCache[dstGUID] = finalBuffs
-    end
+    buffCache[dstGUID] = buffs
     buffCacheValid[dstGUID] = GetTime() + BUFF_CACHE_EXPIRATION_TIME -- Expiration timestamp
 end
 
@@ -814,7 +788,7 @@ end
 ---------------------------
 -- PUBLIC FUNCTIONS
 ---------------------------
-local function GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking, forcedNPCDuration)
+GetGUIDAuraTime = function(dstGUID, spellName, spellID, srcGUID, isStacking, forcedNPCDuration)
     local guidTable = guids[dstGUID]
     if guidTable then
 
