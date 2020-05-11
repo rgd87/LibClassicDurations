@@ -691,7 +691,7 @@ local function RegenerateBuffList(unit, dstGUID)
         if spellName then
             local spellID = GetLastRankSpellID(spellName)
             if spellID then
-                local icon = GetSpellTexture(spellID) or 136235
+                local icon = GetSpellTexture(spellID)
                 local opts = spells[spellID]
                 local buffInfo = { spellName, icon, 0, (opts and opts.buffType), 0, 0, nil, nil, nil, spellID, false, false, false, false, 1 }
                 local isStacking = opts and opts.stacking
