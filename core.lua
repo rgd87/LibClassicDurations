@@ -197,6 +197,47 @@ local function purgeOldGUIDs()
 end
 lib.purgeTicker = lib.purgeTicker or C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 
+------------------------------------
+-- Restore data if using standalone
+if IsAddOnLoaded("LibClassicDurations") then
+    f:RegisterEvent("PLAYER_LOGIN")
+    f:RegisterEvent("PLAYER_LOGOUT")
+    local function MergeTable(t1, t2)
+        if not t2 then return false end
+        for k,v in pairs(t2) do
+            if type(v) == "table" then
+                if t1[k] == nil then
+                    t1[k] = CopyTable(v)
+                else
+                    MergeTable(t1[k], v)
+                end
+            -- elseif v == "__REMOVED__" then
+                -- t1[k] = nil
+            else
+                t1[k] = v
+            end
+        end
+        return t1
+    end
+    function f:PLAYER_LOGIN()
+        if LCD_Data and LCD_GUIDAccess then
+            local curSessionData = lib.guids
+            lib.guids = LCD_Data
+            guids = lib.guids -- update upvalue
+            MergeTable(guids, curSessionData)
+
+            local curSessionAccessTimes = lib.guidAccessTimes
+            lib.guidAccessTimes = LCD_GUIDAccess
+            guidAccessTimes = lib.guidAccessTimes -- update upvalue
+            MergeTable(guidAccessTimes, curSessionAccessTimes)
+        end
+    end
+    function f:PLAYER_LOGOUT()
+        LCD_Data = guids
+        LCD_GUIDAccess = guidAccessTimes
+    end
+end
+
 --------------------------
 -- DIMINISHING RETURNS
 --------------------------
