@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 56
+local MAJOR, MINOR = "LibClassicDurations", 57
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -77,6 +77,7 @@ local tinsert = table.insert
 local unpack = unpack
 local GetAuraDurationByUnitDirect
 local GetGUIDAuraTime
+local time = time
 
 if lib.enableEnemyBuffTracking == nil then lib.enableEnemyBuffTracking = false end
 local enableEnemyBuffTracking = lib.enableEnemyBuffTracking
@@ -178,7 +179,7 @@ end
 --------------------------
 
 local function purgeOldGUIDs()
-    local now = GetTime()
+    local now = time()
     local deleted = {}
     for guid, lastAccessTime in pairs(guidAccessTimes) do
         if lastAccessTime + PURGE_THRESHOLD < now then
@@ -450,7 +451,7 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     end
     applicationTable[4] = comboPoints
 
-    guidAccessTimes[dstGUID] = now
+    guidAccessTimes[dstGUID] = time()
 end
 
 local function FireToUnits(event, dstGUID)
@@ -474,7 +475,7 @@ end
 local eventSnapshot
 castLog.SetLastCast = function(self, srcGUID, spellID, timestamp)
     self[srcGUID] = { spellID, timestamp }
-    guidAccessTimes[srcGUID] = timestamp
+    guidAccessTimes[srcGUID] = time()
 end
 castLog.IsCurrent = function(self, srcGUID, spellID, timestamp, timeWindow)
     local entry = self[srcGUID]
