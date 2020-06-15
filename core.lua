@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 56
+local MAJOR, MINOR = "LibClassicDurations", 57
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -453,7 +453,7 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event)
 end
 
 local rollbackTable = setmetatable({}, { __mode="v" })
-local function ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstGUID, dstFlags, dstName)
+local function ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstGUID, dstFlags, dstName, isCrit)
     if indirectRefreshSpells[spellName] then
         local refreshTable = indirectRefreshSpells[spellName]
         if refreshTable.events[eventType] then
@@ -462,7 +462,7 @@ local function ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstG
             local condition = refreshTable.condition
             if condition then
                 local isMine = bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE
-                if not condition(isMine) then return end
+                if not condition(isMine, isCrit) then return end
             end
 
             if refreshTable.targetResistCheck then
@@ -497,9 +497,9 @@ function f:CombatLogHandler(...)
     local timestamp, eventType, hideCaster,
     srcGUID, srcName, srcFlags, srcFlags2,
     dstGUID, dstName, dstFlags, dstFlags2,
-    spellID, spellName, spellSchool, auraType = ...
+    spellID, spellName, spellSchool, auraType, _, _, _, _, _, isCrit = ...
 
-    ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstGUID, dstFlags, dstName)
+    ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstGUID, dstFlags, dstName, isCrit)
 
     if  eventType == "SPELL_MISSED" and
         bit_band(srcFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE
