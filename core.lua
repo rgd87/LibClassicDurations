@@ -196,7 +196,10 @@ local function purgeOldGUIDs()
         guidAccessTimes[guid] = nil
     end
 end
-lib.purgeTicker = lib.purgeTicker or C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
+if lib.purgeTicker then
+    lib.purgeTicker:Cancel()
+end
+lib.purgeTicker = C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 
 ------------------------------------
 -- Restore data if using standalone
