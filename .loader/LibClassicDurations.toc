@@ -2,6 +2,7 @@
 ## Title: LibClassicDurations
 ## Version: @project-version@
 ## Author: d87
+## SavedVariables: LCD_Data, LCD_GUIDAccess
 
 ## X-Curse-Project-ID: 323800
 

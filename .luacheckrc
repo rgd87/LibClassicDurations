@@ -25,6 +25,8 @@ globals = {
 	"bit",
 
 	"LibClassicDurationsScanTipTextLeft1",
+	"LCD_Data",
+	"LCD_GUIDAccess",
 	"WOW_PROJECT_CLASSIC",
 	"WOW_PROJECT_ID",
 	"MAX_PARTY_MEMBERS",

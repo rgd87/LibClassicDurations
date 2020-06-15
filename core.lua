@@ -77,6 +77,7 @@ local tinsert = table.insert
 local unpack = unpack
 local GetAuraDurationByUnitDirect
 local GetGUIDAuraTime
+local time = time
 
 if lib.enableEnemyBuffTracking == nil then lib.enableEnemyBuffTracking = false end
 local enableEnemyBuffTracking = lib.enableEnemyBuffTracking
@@ -178,7 +179,7 @@ end
 --------------------------
 
 local function purgeOldGUIDs()
-    local now = GetTime()
+    local now = time()
     local deleted = {}
     for guid, lastAccessTime in pairs(guidAccessTimes) do
         if lastAccessTime + PURGE_THRESHOLD < now then
@@ -196,6 +197,47 @@ local function purgeOldGUIDs()
     end
 end
 lib.purgeTicker = lib.purgeTicker or C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
+
+------------------------------------
+-- Restore data if using standalone
+if IsAddOnLoaded("LibClassicDurations") then
+    f:RegisterEvent("PLAYER_LOGIN")
+    f:RegisterEvent("PLAYER_LOGOUT")
+    local function MergeTable(t1, t2)
+        if not t2 then return false end
+        for k,v in pairs(t2) do
+            if type(v) == "table" then
+                if t1[k] == nil then
+                    t1[k] = CopyTable(v)
+                else
+                    MergeTable(t1[k], v)
+                end
+            -- elseif v == "__REMOVED__" then
+                -- t1[k] = nil
+            else
+                t1[k] = v
+            end
+        end
+        return t1
+    end
+    function f:PLAYER_LOGIN()
+        if LCD_Data and LCD_GUIDAccess then
+            local curSessionData = lib.guids
+            lib.guids = LCD_Data
+            guids = lib.guids -- update upvalue
+            MergeTable(guids, curSessionData)
+
+            local curSessionAccessTimes = lib.guidAccessTimes
+            lib.guidAccessTimes = LCD_GUIDAccess
+            guidAccessTimes = lib.guidAccessTimes -- update upvalue
+            MergeTable(guidAccessTimes, curSessionAccessTimes)
+        end
+    end
+    function f:PLAYER_LOGOUT()
+        LCD_Data = guids
+        LCD_GUIDAccess = guidAccessTimes
+    end
+end
 
 --------------------------
 -- DIMINISHING RETURNS
@@ -409,7 +451,7 @@ local function SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName,
     end
     applicationTable[4] = comboPoints
 
-    guidAccessTimes[dstGUID] = now
+    guidAccessTimes[dstGUID] = time()
 end
 
 local function FireToUnits(event, dstGUID)
@@ -433,7 +475,7 @@ end
 local eventSnapshot
 castLog.SetLastCast = function(self, srcGUID, spellID, timestamp)
     self[srcGUID] = { spellID, timestamp }
-    guidAccessTimes[srcGUID] = timestamp
+    guidAccessTimes[srcGUID] = time()
 end
 castLog.IsCurrent = function(self, srcGUID, spellID, timestamp, timeWindow)
     local entry = self[srcGUID]
