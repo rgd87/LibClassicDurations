@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 57
+local MAJOR, MINOR = "LibClassicDurations", 58
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -500,9 +500,11 @@ end
 local rollbackTable = setmetatable({}, { __mode="v" })
 local function ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstGUID, dstFlags, dstName, isCrit)
     if indirectRefreshSpells[spellName] then
-        local refreshTable = indirectRefreshSpells[spellName]
+        local targetSpells = indirectRefreshSpells[spellName]
+
+        for targetSpellID, refreshTable in pairs(targetSpells) do
         if refreshTable.events[eventType] then
-            local targetSpellID = refreshTable.targetSpellID
+
 
             local condition = refreshTable.condition
             if condition then
@@ -534,6 +536,7 @@ local function ProcIndirectRefresh(eventType, spellName, srcGUID, srcFlags, dstG
                     rollbackTable[srcGUID][dstGUID][targetSpellID] = {now, oldStartTime}
                 end
             end
+        end
         end
     end
 end
