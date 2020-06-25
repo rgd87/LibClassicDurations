@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 59
+local MAJOR, MINOR = "LibClassicDurations", 60
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -205,7 +205,7 @@ lib.purgeTicker = C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 -- Restore data if using standalone
 f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
-    if IsAddOnLoaded("LibClassicDurations") then
+    if LCD_Data and LCD_GUIDAccess then
         local function MergeTable(t1, t2)
             if not t2 then return false end
             for k,v in pairs(t2) do
@@ -215,8 +215,6 @@ function f:PLAYER_LOGIN()
                     else
                         MergeTable(t1[k], v)
                     end
-                -- elseif v == "__REMOVED__" then
-                    -- t1[k] = nil
                 else
                     t1[k] = v
                 end
@@ -224,23 +222,21 @@ function f:PLAYER_LOGIN()
             return t1
         end
 
-        if LCD_Data and LCD_GUIDAccess then
-            local curSessionData = lib.guids
-            lib.guids = LCD_Data
-            guids = lib.guids -- update upvalue
-            MergeTable(guids, curSessionData)
+        local curSessionData = lib.guids
+        lib.guids = LCD_Data
+        guids = lib.guids -- update upvalue
+        MergeTable(guids, curSessionData)
 
-            local curSessionAccessTimes = lib.guidAccessTimes
-            lib.guidAccessTimes = LCD_GUIDAccess
-            guidAccessTimes = lib.guidAccessTimes -- update upvalue
-            MergeTable(guidAccessTimes, curSessionAccessTimes)
-        end
+        local curSessionAccessTimes = lib.guidAccessTimes
+        lib.guidAccessTimes = LCD_GUIDAccess
+        guidAccessTimes = lib.guidAccessTimes -- update upvalue
+        MergeTable(guidAccessTimes, curSessionAccessTimes)
+    end
 
-        f:RegisterEvent("PLAYER_LOGOUT")
-        function f:PLAYER_LOGOUT()
-            LCD_Data = guids
-            LCD_GUIDAccess = guidAccessTimes
-        end
+    f:RegisterEvent("PLAYER_LOGOUT")
+    function f:PLAYER_LOGOUT()
+        LCD_Data = guids
+        LCD_GUIDAccess = guidAccessTimes
     end
 end
 
