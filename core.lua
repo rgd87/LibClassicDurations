@@ -205,45 +205,42 @@ lib.purgeTicker = C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 -- Restore data if using standalone
 f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
-    if IsAddOnLoaded("LibClassicDurations") then
-        local function MergeTable(t1, t2)
-            if not t2 then return false end
-            for k,v in pairs(t2) do
-                if type(v) == "table" then
-                    if t1[k] == nil then
-                        t1[k] = CopyTable(v)
-                    else
-                        MergeTable(t1[k], v)
-                    end
-                -- elseif v == "__REMOVED__" then
-                    -- t1[k] = nil
+    local function MergeTable(t1, t2)
+        if not t2 then return false end
+        for k,v in pairs(t2) do
+            if type(v) == "table" then
+                if t1[k] == nil then
+                    t1[k] = CopyTable(v)
                 else
-                    t1[k] = v
+                    MergeTable(t1[k], v)
                 end
+            -- elseif v == "__REMOVED__" then
+                -- t1[k] = nil
+            else
+                t1[k] = v
             end
-            return t1
         end
+        return t1
+    end
 
-        if LCD_Data and LCD_GUIDAccess then
-            local curSessionData = lib.guids
-            lib.guids = LCD_Data
-            guids = lib.guids -- update upvalue
-            MergeTable(guids, curSessionData)
+    if LCD_Data and LCD_GUIDAccess then
+        local curSessionData = lib.guids
+        lib.guids = LCD_Data
+        guids = lib.guids -- update upvalue
+        MergeTable(guids, curSessionData)
 
-            local curSessionAccessTimes = lib.guidAccessTimes
-            lib.guidAccessTimes = LCD_GUIDAccess
-            guidAccessTimes = lib.guidAccessTimes -- update upvalue
-            MergeTable(guidAccessTimes, curSessionAccessTimes)
-        end
+        local curSessionAccessTimes = lib.guidAccessTimes
+        lib.guidAccessTimes = LCD_GUIDAccess
+        guidAccessTimes = lib.guidAccessTimes -- update upvalue
+        MergeTable(guidAccessTimes, curSessionAccessTimes)
+    end
 
-        f:RegisterEvent("PLAYER_LOGOUT")
-        function f:PLAYER_LOGOUT()
-            LCD_Data = guids
-            LCD_GUIDAccess = guidAccessTimes
-        end
+    f:RegisterEvent("PLAYER_LOGOUT")
+    function f:PLAYER_LOGOUT()
+        LCD_Data = guids
+        LCD_GUIDAccess = guidAccessTimes
     end
 end
-
 
 --------------------------
 -- DIMINISHING RETURNS
