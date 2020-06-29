@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 60
+local MAJOR, MINOR = "LibClassicDurations", 61
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -178,12 +178,12 @@ end
 -- OLD GUIDs PURGE
 --------------------------
 
-local function purgeOldGUIDs()
+local function purgeOldGUIDsArgs(dataTable, accessTimes)
     local now = time()
     local deleted = {}
-    for guid, lastAccessTime in pairs(guidAccessTimes) do
+    for guid, lastAccessTime in pairs(accessTimes) do
         if lastAccessTime + PURGE_THRESHOLD < now then
-            guids[guid] = nil
+            dataTable[guid] = nil
             nameplateUnitMap[guid] = nil
             buffCacheValid[guid] = nil
             buffCache[guid] = nil
@@ -193,8 +193,12 @@ local function purgeOldGUIDs()
         end
     end
     for _, guid in ipairs(deleted) do
-        guidAccessTimes[guid] = nil
+        accessTimes[guid] = nil
     end
+end
+
+local function purgeOldGUIDs()
+    purgeOldGUIDsArgs(guids, guidAccessTimes)
 end
 if lib.purgeTicker then
     lib.purgeTicker:Cancel()
@@ -206,6 +210,8 @@ lib.purgeTicker = C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
     if LCD_Data and LCD_GUIDAccess then
+        purgeOldGUIDsArgs(LCD_Data, LCD_GUIDAccess)
+
         local function MergeTable(t1, t2)
             if not t2 then return false end
             for k,v in pairs(t2) do
