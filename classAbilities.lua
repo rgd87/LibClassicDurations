@@ -1,7 +1,7 @@
 local lib = LibStub and LibStub("LibClassicDurations", true)
 if not lib then return end
 
-local Type, Version = "SpellTable", 61
+local Type, Version = "SpellTable", 62
 if lib:GetDataVersion(Type) >= Version then return end  -- older versions didn't have that function
 
 local Spell = lib.AddAura
@@ -296,7 +296,25 @@ Spell({ 9484, 9485, 10955 }, {
 Spell( 10060, { duration = 15, type = "BUFF", buffType = "Magic" }) --Power Infusion
 Spell({ 14914, 15261, 15262, 15263, 15264, 15265, 15266, 15267 }, { duration = 10, stacking = true }) -- Holy Fire, stacking?
 Spell({ 586, 9578, 9579, 9592, 10941, 10942 }, { duration = 10, type = "BUFF" }) -- Fade
-Spell({ 8122, 8124, 10888, 10890 }, { duration = 8,  }) -- Psychic Scream
+if class == "PRIEST" then
+    lib:TrackItemSet("PriestPvPSet", {
+        17604, 17603, 17605, 17608, 17607, 17602,
+        17623, 17625, 17622, 17624, 17618, 17620,
+        22869, 22859, 22882, 22885, 23261, 23262,
+        23302, 23303, 23288, 23289, 23316, 23317,
+    })
+    lib:RegisterSetBonusCallback("PriestPvPSet", 3)
+end
+Spell({ 8122, 8124, 10888, 10890 }, {
+    duration = function(spellID, isSrcPlayer)
+        if isSrcPlayer then
+            local pvpSetBonus = lib:IsSetBonusActive("PriestPvPSet", 3) and 1 or 0
+            return 8 + pvpSetBonus
+        else
+            return 8
+        end
+    end
+}) -- Psychic Scream
 Spell({ 589, 594, 970, 992, 2767, 10892, 10893, 10894 }, { stacking = true,
     duration = function(spellID, isSrcPlayer)
         -- Improved SWP, 2 ranks: Increases the duration of your Shadow Word: Pain spell by 3 sec.
