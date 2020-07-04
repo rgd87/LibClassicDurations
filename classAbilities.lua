@@ -278,7 +278,19 @@ Spell({ 7001, 27873, 27874 }, { duration = 10, type = "BUFF", buffType = "Magic"
 Spell( 552, { duration = 20, type = "BUFF", buffType = "Magic" }) -- Abolish Disease
 Spell({ 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 }, {duration = 30, type = "BUFF", buffType = "Magic" }) -- PWS
 Spell( 6788, { duration = 15 }) -- Weakened Soul
-Spell({ 139, 6074, 6075, 6076, 6077, 6078, 10927, 10928, 10929, 25315 }, { duration = 15, type = "BUFF", buffType = "Magic" }) -- Renew
+if class == "PRIEST" then
+    lib:TrackItemSet("Garments of the Oracle", { 21349, 21350, 21348, 21352, 21351 })
+    lib:RegisterSetBonusCallback("Garments of the Oracle", 5)
+end
+Spell({ 139, 6074, 6075, 6076, 6077, 6078, 10927, 10928, 10929, 25315 }, {
+    duration = function(spellID, isSrcPlayer)
+        if isSrcPlayer and lib:IsSetBonusActive("Garments of the Oracle", 5) then
+            return 18
+        else
+            return 15
+        end
+    end,
+    type = "BUFF", buffType = "Magic" }) -- Renew
 
 Spell( 15487, { duration = 5 }) -- Silence
 Spell({ 10797, 19296, 19299, 19302, 19303, 19304, 19305 }, { duration = 6, stacking = true }) -- starshards
@@ -765,7 +777,12 @@ Spell({ 2878, 5627, 5627 }, {
     end
 }) -- Turn Undead
 
-Spell( 1044, { duration = 10, type = "BUFF", buffType = "Magic" }) -- Blessing of Freedom
+Spell( 1044, {
+    duration = function(spellID, isSrcPlayer)
+        local talents = 0
+        if isSrcPlayer then talents = 3*Talent(20174, 20175)  end
+        return 10 + talents
+    end, type = "BUFF", buffType = "Magic" }) -- Blessing of Freedom
 Spell({ 6940, 20729 }, { duration = 30, type = "BUFF", buffType = "Magic" }) -- Blessing of Sacrifice
 Spell({ 1022, 5599, 10278 }, { type = "BUFF",
     buffType = "Magic",
