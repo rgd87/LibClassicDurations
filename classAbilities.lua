@@ -16,6 +16,9 @@ local locale = GetLocale()
 if locale == "zhCN" then
     lib.spellNameToID[GetSpellInfo(980)] = nil
 end
+if locale == "ruRU" then
+    lib.spellNameToID[GetSpellInfo(12721)] = nil -- Deep Wounds conflict with Rake on ruRU
+end
 
 -- https://github.com/rgd87/LibClassicDurations/issues/11
 lib.indirectRefreshSpells = {
@@ -483,7 +486,9 @@ Spell({ 772, 6546, 6547, 6548, 11572, 11573, 11574 }, { stacking = true,
         else return 21 end
     end
 }) -- Rend
+if locale ~= "ruRU" or class ~= "DRUID" then
 Spell( 12721, { duration = 12, stacking = true }) -- Deep Wounds
+end
 
 Spell({ 1715, 7372, 7373 }, { duration = 15 }) -- Hamstring
 Spell( 23694 , { duration = 5 }) -- Improved Hamstring
