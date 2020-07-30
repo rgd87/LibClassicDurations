@@ -573,6 +573,8 @@ do
         elseif eventType == "SPELL_PERIODIC_DAMAGE" then
             local spellTable = GetSpellTable(srcGUID, dstGUID, spellID)
             spellTable.tickExtended = false -- unmark tick
+        elseif eventType == "SPELL_AURA_REMOVED" then
+            SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, true)
         end
     end
     -- if playerClass ~= "MAGE" then
