@@ -123,7 +123,7 @@ if class == "MAGE" then
             customAction = function(srcGUID, dstGUID, spellID)
                 local lib = LibStub("LibClassicDurations")
                 local spellTable = lib:GetSpellTable(srcGUID, dstGUID, spellID)
-                if not spellTable.tickExtended then
+                if spellTable and not spellTable.tickExtended then
                     local igniteStartTime = spellTable[2]
                     spellTable[2] = igniteStartTime + 2
                     spellTable.tickExtended = true
