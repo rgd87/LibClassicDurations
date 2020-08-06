@@ -127,6 +127,9 @@ if class == "MAGE" then
                     local igniteStartTime = spellTable[2]
                     spellTable[2] = igniteStartTime + 2
                     spellTable.tickExtended = true
+                    if lib.DEBUG_IGNITE then
+                        print(GetTime(), "[Ignite] Extended", dstGUID, "New start time:", spellTable[2])
+                    end
                 end
             end,
         }
