@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 63
+local MAJOR, MINOR = "LibClassicDurations", 64
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -572,7 +572,9 @@ do
             spellTable.tickExtended = true -- skipping first tick by treating it as already extended
         elseif eventType == "SPELL_PERIODIC_DAMAGE" then
             local spellTable = GetSpellTable(srcGUID, dstGUID, spellID)
-            spellTable.tickExtended = false -- unmark tick
+            if spellTable then
+                spellTable.tickExtended = false -- unmark tick
+            end
         elseif eventType == "SPELL_AURA_REMOVED" then
             SetTimer(srcGUID, dstGUID, dstName, dstFlags, spellID, spellName, opts, auraType, true)
         end
