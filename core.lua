@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 64
+local MAJOR, MINOR = "LibClassicDurations", 65
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -851,10 +851,17 @@ function lib.UnitAuraDirect(unit, index, filter)
         return FillInDuration(unit, UnitAura(unit, index, filter))
     end
 end
-lib.UnitAuraWithBuffs = lib.UnitAuraDirect
+if not lib.UnitAuraWithBuffs then
+	function lib.UnitAuraWithBuffs(unit, index, filter)
+		return lib.UnitAuraDirect(unit, index, filter)
+	end
+end
 
-function lib.UnitAuraWrapper(unit, ...)
-    return FillInDuration(unit, UnitAura(unit, ...))
+lib.FillInDuration = FillInDuration
+if not lib.UnitAuraWrapper then
+	function lib.UnitAuraWrapper(unit, ...)
+		return FillInDuration(unit, UnitAura(unit, ...))
+	end
 end
 
 function lib:UnitAura(...)
