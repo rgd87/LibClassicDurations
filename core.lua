@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 64
+local MAJOR, MINOR = "LibClassicDurations", 67
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -75,7 +75,6 @@ local GetSpellInfo = GetSpellInfo
 local GetTime = GetTime
 local tinsert = table.insert
 local unpack = unpack
-local GetAuraDurationByUnitDirect
 local GetGUIDAuraTime
 local time = time
 
@@ -822,7 +821,7 @@ end
 
 local FillInDuration = function(unit, buffName, icon, count, debuffType, duration, expirationTime, caster, canStealOrPurge, nps, spellId, ...)
     if buffName then
-        local durationNew, expirationTimeNew = GetAuraDurationByUnitDirect(unit, spellId, caster, buffName)
+        local durationNew, expirationTimeNew = lib.GetAuraDurationByUnitDirect(unit, spellId, caster, buffName)
         if duration == 0 and durationNew then
             duration = durationNew
             expirationTime = expirationTimeNew
@@ -830,6 +829,7 @@ local FillInDuration = function(unit, buffName, icon, count, debuffType, duratio
         return buffName, icon, count, debuffType, duration, expirationTime, caster, canStealOrPurge, nps, spellId, ...
     end
 end
+lib.FillInDuration = FillInDuration
 
 function lib.UnitAuraDirect(unit, index, filter)
     if enableEnemyBuffTracking and filter == "HELPFUL" and not UnitIsFriend("player", unit) and not UnitAura(unit, 1, filter) then
@@ -851,10 +851,13 @@ function lib.UnitAuraDirect(unit, index, filter)
         return FillInDuration(unit, UnitAura(unit, index, filter))
     end
 end
-lib.UnitAuraWithBuffs = lib.UnitAuraDirect
+
+function lib.UnitAuraWithBuffs(...)
+    return lib.UnitAuraDirect(...)
+end
 
 function lib.UnitAuraWrapper(unit, ...)
-    return FillInDuration(unit, UnitAura(unit, ...))
+    return lib.FillInDuration(unit, UnitAura(unit, ...))
 end
 
 function lib:UnitAura(...)
@@ -963,7 +966,6 @@ function lib.GetAuraDurationByUnitDirect(unit, spellID, casterUnit, spellName)
     if not spellName then spellName = GetSpellInfo(spellID) end
     return GetGUIDAuraTime(dstGUID, spellName, spellID, srcGUID, isStacking, npcDurationById)
 end
-GetAuraDurationByUnitDirect = lib.GetAuraDurationByUnitDirect
 
 function lib:GetAuraDurationByUnit(...)
     return self.GetAuraDurationByUnitDirect(...)
