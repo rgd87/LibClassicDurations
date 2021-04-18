@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 67
+local MAJOR, MINOR = "LibClassicDurations", 69
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -112,6 +112,10 @@ lib.AddAura = function(id, opts)
     end
 
     local spellName = GetSpellInfo(lastRankID)
+    if not spellName then
+        -- print(MINOR, lastRankID, spellName)
+        return
+    end
     spellNameToID[spellName] = lastRankID
 
     if type(id) == "table" then
@@ -140,7 +144,10 @@ local function processNPCSpellTable()
     counter = 0
     local id = next(dataTable, prevID)
     while (id and counter < 300) do
-        NPCspellNameToID[GetSpellInfo(id)] = id
+        local spellName = GetSpellInfo(id)
+        if spellName then
+            NPCspellNameToID[GetSpellInfo(id)] = id
+        end
 
         counter = counter + 1
         prevID = id
@@ -211,16 +218,16 @@ function f:PLAYER_LOGIN()
     if LCD_Data and LCD_GUIDAccess then
         purgeOldGUIDsArgs(LCD_Data, LCD_GUIDAccess)
 
-        local function MergeTable(t1, t2)
+        local function MergeTableNoOverwrite(t1, t2)
             if not t2 then return false end
             for k,v in pairs(t2) do
                 if type(v) == "table" then
                     if t1[k] == nil then
                         t1[k] = CopyTable(v)
                     else
-                        MergeTable(t1[k], v)
+                        MergeTableNoOverwrite(t1[k], v)
                     end
-                else
+                elseif t1[k] == nil then
                     t1[k] = v
                 end
             end
@@ -228,14 +235,12 @@ function f:PLAYER_LOGIN()
         end
 
         local curSessionData = lib.guids
-        lib.guids = LCD_Data
-        guids = lib.guids -- update upvalue
-        MergeTable(guids, curSessionData)
+        local restoredSessionData = LCD_Data
+        MergeTableNoOverwrite(curSessionData, restoredSessionData)
 
         local curSessionAccessTimes = lib.guidAccessTimes
-        lib.guidAccessTimes = LCD_GUIDAccess
-        guidAccessTimes = lib.guidAccessTimes -- update upvalue
-        MergeTable(guidAccessTimes, curSessionAccessTimes)
+        local restoredSessionAccessTimes = LCD_GUIDAccess
+        MergeTableNoOverwrite(curSessionAccessTimes, restoredSessionAccessTimes)
     end
 
     f:RegisterEvent("PLAYER_LOGOUT")
