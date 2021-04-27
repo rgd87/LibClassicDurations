@@ -1,4 +1,4 @@
-## Interface: 11305
+## Interface: 11307
 ## Title: LibClassicDurations
 ## Version: @project-version@
 ## Author: d87
